@@ -1,6 +1,0 @@
-@authStudy_HostAddress = http://localhost:5098
-
-GET {{authStudy_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
