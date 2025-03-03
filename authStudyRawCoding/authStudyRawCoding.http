@@ -1,6 +1,0 @@
-@authStudyRawCoding_HostAddress = http://localhost:5274
-
-GET {{authStudyRawCoding_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
