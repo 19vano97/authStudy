@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "T9HrGUuaslBnSn0OVmCENlfrGdVnJo+fptah9lS68/4=",
+  "Source": "IdentityServerTest",
+  "BasePath": "_content/IdentityServerTest",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
