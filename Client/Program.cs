@@ -10,13 +10,37 @@ builder.Services.AddAuthentication(options =>
 .AddCookie("Cookies")
 .AddOpenIdConnect("oidc", options =>
 {
-    options.Authority = "http://localhost:5262"; // Адрес IdentityServer
+    options.Authority = "https://localhost:7270";
     options.ClientId = "react-client";
     options.ResponseType = "code";
     options.SaveTokens = true;
-    options.RequireHttpsMetadata = false;
+    options.ResponseType = "code";
+    options.UsePkce = true;
+    options.SaveTokens = true;
+
+    options.Scope.Add("openid");
+    options.Scope.Add("profile");
+    options.Scope.Add("api.read");
+    options.Scope.Add("offline_access");
+    //"openid", "profile", "api.read", "offline_access"
+
+    options.CallbackPath = "/signin-oidc";
+
+    options.GetClaimsFromUserInfoEndpoint = true;
 });
 builder.Services.AddControllers();
+// builder.Services.ConfigureApplicationCookie(options =>
+// {
+//     options.Cookie.SameSite = SameSiteMode.Lax; // Allows cross-origin cookies if needed
+// });
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5297); // HTTP
+    options.ListenAnyIP(7124, listenOptions =>
+    {
+        listenOptions.UseHttps(); // Enable HTTPS
+    });
+});
 
 var app = builder.Build();
 
