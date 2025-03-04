@@ -12,6 +12,7 @@
     <PackageReference Include="IdentityServer4" Version="1.0.0" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="1.0.0" />
     <PackageReference Include="IdentityServer4.EntityFramework" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
