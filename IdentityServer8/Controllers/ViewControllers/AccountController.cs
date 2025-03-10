@@ -3,29 +3,40 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer8.Models.Account;
 using IdentityServer8.Models.ModelViewModels;
+using IdentityServer8.Models.Settings;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace IdentityServer8.Controllers.ViewControllers;
 
 public class AccountController : Controller
 {
-    private readonly IIdentityServerInteractionService _identityServerInteractionService;
+    private readonly IIdentityServerInteractionService _interaction;
     private readonly SignInManager<Account> _signInManager;
     private readonly UserManager<Account> _userManager;
     private readonly IClientStore _clientStore;
+    private readonly IdentityServerSettings _settings;
 
     public AccountController(
         SignInManager<Account> signInManager, 
         UserManager<Account> userManager,
         IIdentityServerInteractionService identityServerInteractionService,
-        IClientStore clientStore)
+        IClientStore clientStore,
+        IOptions<IdentityServerSettings> settings)
     {
         _signInManager = signInManager;
         _userManager = userManager;
-        _identityServerInteractionService = identityServerInteractionService;
+        _interaction = identityServerInteractionService;
         _clientStore = clientStore;
+        _settings = settings.Value;
+    }
+
+    public IActionResult Index()
+    {
+        return View();
     }
 
     [HttpGet]
@@ -37,12 +48,16 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (!ModelState.IsValid) return View(model);
+        // var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+        if (!ModelState.IsValid) 
+            return View(model);
 
         var user = await _userManager.FindByNameAsync(model.Username);
+
         if (user != null)
         {
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
             if (result.Succeeded)
             {
                 return Redirect(model.ReturnUrl);
@@ -50,6 +65,7 @@ public class AccountController : Controller
         }
 
         ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
         return View(model);
     }
 
@@ -63,7 +79,10 @@ public class AccountController : Controller
     public async Task<IActionResult> Register(RegisterViewModel newAccount)
     {
         if (await _userManager.FindByNameAsync(newAccount.Username) != null)
-            return BadRequest("User has already existed"); // TODO: chnage to a proper view
+        {
+            ModelState.AddModelError(string.Empty, "Account is already existed");
+            return View(newAccount);
+        }
 
         var accountToAdd = new Account
         {
@@ -76,24 +95,71 @@ public class AccountController : Controller
         var result = await _userManager.CreateAsync(accountToAdd, newAccount.Password);
 
         if (!result.Succeeded)
-            return BadRequest(result.Errors);
+            return RedirectToAction("Error");
 
-        return RedirectToAction("Login", new LoginViewModel { 
-            Username = newAccount.Username,
-            Password = newAccount.Password,
-            ReturnUrl = newAccount.ReturnUrl});
+        await _signInManager.SignInAsync(accountToAdd, isPersistent: false);
+
+        return Redirect(newAccount.ReturnUrl ?? "/");
     }
 
-    public IActionResult OnPostRedirectToRegisterPage(string returnUrl = "/")
+    [HttpGet]
+    public IActionResult EmailValidation(string returnUrl)
     {
-        return RedirectToAction("Register", returnUrl);
+        return View(new EmailValidationViewModel {ReturnUrl = returnUrl});
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EmailValidation(EmailValidationViewModel model)
+    {
+        // var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+        if (!ModelState.IsValid) 
+            return View(model);
+
+        var user = await _userManager.FindByNameAsync(model.Username);
+
+        if (user is null)
+        {
+            ModelState.AddModelError(string.Empty, "The account doesn't exist");
+            
+            return View(model);
+        }
+
+        return RedirectToAction("CreatePassword", model);
+    }
+
+    [HttpGet]
+    public IActionResult CreatePassword(EmailValidationViewModel emailValidation)
+    {
+        return View(new ResetPasswordViewModel{ Username = emailValidation.Username, ReturnUrl = emailValidation.ReturnUrl});
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreatePassword(ResetPasswordViewModel model)
+    {
+        var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+        var user = await _userManager.FindByNameAsync(model.Username);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        if (!ModelState.IsValid) return View(model);
+
+        var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
+        
+        if (result.Succeeded)
+        {
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return Redirect(model.ReturnUrl);
+        }
+
+        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+        return View(model);
     }
 
     [HttpGet]
     public async Task<IActionResult> Logout(string logoutId)
     {
-        var logoutRequest = await _identityServerInteractionService.GetLogoutContextAsync(logoutId);
-        var postLogoutRedirectUri = "https://localhost:7270";
+        var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
+        var postLogoutRedirectUri = _settings.DefaultReturnUri;
 
         if (!string.IsNullOrEmpty(logoutRequest?.ClientId))
         {
@@ -106,5 +172,10 @@ public class AccountController : Controller
         await _signInManager.SignOutAsync();
 
         return Redirect(postLogoutRedirectUri);
+    }
+
+    public IActionResult Error()
+    {
+        return View();
     }
 }

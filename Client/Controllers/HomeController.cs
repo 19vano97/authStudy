@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Client.Models;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Client.Controllers;
 
@@ -13,11 +15,32 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> IndexAsync()
     {
-        return View();
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
+
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            return View(new Token { AccessToken = "nothing", RefreshToken = "token.Issuer"});
+        }
+
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                var responce = await client.GetAsync("https://localhost:7099/api/auth/check");
+                return View(new Token { AccessToken = accessToken, RefreshToken = responce.StatusCode.ToString()});
+            }
+        }
+        catch (System.Exception)
+        {
+            return View(new Token { AccessToken = accessToken, RefreshToken = refreshToken});
+        }
     }
 
+    
     public IActionResult Privacy()
     {
         return View();

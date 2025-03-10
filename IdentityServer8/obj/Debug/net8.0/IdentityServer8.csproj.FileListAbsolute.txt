@@ -184,3 +184,11 @@
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/IdentityServer8.staticwebassets.endpoints.json
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/obj/Debug/net8.0/staticwebassets.build.endpoints.json
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/obj/Debug/net8.0/staticwebassets/msbuild.IdentityServer8.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/System.Web.Cors.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/System.Net.Http.Formatting.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/System.Web.Http.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/System.Web.Http.Cors.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.Diagnostics.Abstractions.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.Hosting.Abstractions.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.ObjectPool.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Newtonsoft.Json.Bson.dll

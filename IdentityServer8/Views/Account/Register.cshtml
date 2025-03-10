@@ -5,7 +5,7 @@
     <input type="hidden" asp-for="ReturnUrl" />
     
     <div>
-        <label asp-for="Username"></label>
+        <label asp-for="Username">Email</label>
         <input asp-for="Username" />
     </div>
 
@@ -23,6 +23,16 @@
         <label asp-for="LastName"></label>
         <input asp-for="LastName" />
     </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
 
     <button type="submit">Create account</button>
 </form>
