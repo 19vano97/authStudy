@@ -1,0 +1,23 @@
+﻿@model IdentityServer8.Models.ModelViewModels.EmailValidationViewModel
+
+<h2>Enter your email</h2>
+<form asp-action="EmailValidation" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    
+    <div>
+        <label asp-for="Username">Email</label>
+        <input asp-for="Username" />
+    </div>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <button type="submit">Continue</button>
+</form>

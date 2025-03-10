@@ -106,3 +106,4 @@
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/obj/Debug/net9.0/Client.pdb
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/obj/Debug/net9.0/Client.genruntimeconfig.cache
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/obj/Debug/net9.0/ref/Client.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/bin/Debug/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll

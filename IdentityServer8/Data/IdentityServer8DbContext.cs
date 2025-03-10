@@ -9,9 +9,7 @@ namespace IdentityServer8.Data;
 public class IdentityServer8DbContext : IdentityDbContext<Account>
 {
     public IdentityServer8DbContext(DbContextOptions<IdentityServer8DbContext> options) : base(options)
-    {
-        
-    }
+    { }
 
     public DbSet<Account> Accounts { get; set; }
 

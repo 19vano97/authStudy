@@ -7,39 +7,35 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = "Cookies";
     options.DefaultChallengeScheme = "oidc";
 })
-.AddCookie("Cookies")
-.AddOpenIdConnect("oidc", options =>
-{
-    options.Authority = "https://localhost:7270";
-    options.ClientId = "react-client";
-    options.ResponseType = "code";
-    options.SaveTokens = true;
-    options.ResponseType = "code";
-    options.UsePkce = true;
-    options.SaveTokens = true;
-
-    options.Scope.Add("openid");
-    options.Scope.Add("profile");
-    options.Scope.Add("api.read");
-    options.Scope.Add("offline_access");
-    //"openid", "profile", "api.read", "offline_access"
-
-    options.CallbackPath = "/signin-oidc";
-
-    options.GetClaimsFromUserInfoEndpoint = true;
-});
+    .AddCookie("Cookies")
+    .AddOpenIdConnect("oidc", options =>
+    {
+        options.Authority = "https://localhost:7270";
+        options.ClientId = "mvc-client";
+        options.ResponseType = "code";
+        options.SaveTokens = true;
+        options.UsePkce = true;
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("api.read");
+        options.Scope.Add("offline_access");
+        options.Scope.Add("email");
+        options.CallbackPath = "/signin-oidc";
+        options.GetClaimsFromUserInfoEndpoint = true;
+    });
 builder.Services.AddControllers();
-// builder.Services.ConfigureApplicationCookie(options =>
-// {
-//     options.Cookie.SameSite = SameSiteMode.Lax; // Allows cross-origin cookies if needed
-// });
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5297); // HTTP
+    options.ListenAnyIP(5297);
     options.ListenAnyIP(7124, listenOptions =>
     {
-        listenOptions.UseHttps(); // Enable HTTPS
+        listenOptions.UseHttps(); 
     });
+});
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.SetMinimumLevel(LogLevel.Debug);
 });
 
 var app = builder.Build();

@@ -2,6 +2,25 @@
   "version": 3,
   "targets": {
     "net9.0": {
+      "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.IdentityModel.Protocols.OpenIdConnect": "8.0.1"
+        },
+        "compile": {
+          "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.Authentication.OpenIdConnect/9.0.2": {
         "type": "package",
         "dependencies": {
@@ -135,6 +154,22 @@
     }
   },
   "libraries": {
+    "Microsoft.AspNetCore.Authentication.JwtBearer/9.0.2": {
+      "sha512": "p3WhJqzvf6uuQiYpxARdC4Yr+UquZzzk7ZGun4MSufx3Mi9kmfjlU0e2MiBRHYWQdfx2HjU0ifaHJecJ7lXqug==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.jwtbearer/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+        "lib/net9.0/Microsoft.AspNetCore.Authentication.JwtBearer.xml",
+        "microsoft.aspnetcore.authentication.jwtbearer.9.0.2.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.jwtbearer.nuspec"
+      ]
+    },
     "Microsoft.AspNetCore.Authentication.OpenIdConnect/9.0.2": {
       "sha512": "rcDh9SZXpCFwRiN0muKqmeu7aPRrNJX//+BP7ESOoRNsTrDCyeNbnqi14IkWw2j9ioIA1gF5wN/UxQbUyk5O7A==",
       "type": "package",
@@ -314,6 +349,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
+      "Microsoft.AspNetCore.Authentication.JwtBearer >= 9.0.2",
       "Microsoft.AspNetCore.Authentication.OpenIdConnect >= 9.0.2"
     ]
   },
@@ -364,6 +400,10 @@
       "net9.0": {
         "targetAlias": "net9.0",
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.JwtBearer": {
+            "target": "Package",
+            "version": "[9.0.2, )"
+          },
           "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
             "target": "Package",
             "version": "[9.0.2, )"

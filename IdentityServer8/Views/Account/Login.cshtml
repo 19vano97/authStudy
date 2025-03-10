@@ -1,12 +1,15 @@
-﻿@model IdentityServer8.Models.ModelViewModels.LoginViewModel
+﻿@using IdentityServer8.Extensions
+@model IdentityServer8.Models.ModelViewModels.LoginViewModel
+
+@{
+    var returnUrl = ViewContext.HttpContext.Request.GetReturnUrl();
+}
 
 <h2>Login</h2>
 <form asp-action="Login" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
-
-    @* <form method="post">
-        <button type="submit" asp-page-handler="RedirectToRegisterPage" asp-for="ReturnUrl">Dont have account?</button>
-    </form>  *@
+    
+    <p><a class="main-link" asp-action="Register" asp-route-ReturnUrl="@returnUrl">Don't have an account?</a></p>
     
     <div>
         <label asp-for="Username"></label>
@@ -17,6 +20,18 @@
         <label asp-for="Password"></label>
         <input asp-for="Password" type="password" />
     </div>
+
+    <p><a class="main-link" asp-action="EmailValidation" asp-route-ReturnUrl="@returnUrl">Forgot password</a></p>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
 
     <button type="submit">Login</button>
 </form>
