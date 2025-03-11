@@ -1,18 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "CpT2BSMGWwQ=",
-  "success": true,
-  "projectFilePath": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/Client.csproj",
-  "expectedPackageFiles": [
-    "/Users/ivanhontar/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/9.0.2/microsoft.aspnetcore.authentication.jwtbearer.9.0.2.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.aspnetcore.authentication.openidconnect/9.0.2/microsoft.aspnetcore.authentication.openidconnect.9.0.2.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.identitymodel.abstractions/8.0.1/microsoft.identitymodel.abstractions.8.0.1.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.identitymodel.jsonwebtokens/8.0.1/microsoft.identitymodel.jsonwebtokens.8.0.1.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.identitymodel.logging/8.0.1/microsoft.identitymodel.logging.8.0.1.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.identitymodel.protocols/8.0.1/microsoft.identitymodel.protocols.8.0.1.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.identitymodel.protocols.openidconnect/8.0.1/microsoft.identitymodel.protocols.openidconnect.8.0.1.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/microsoft.identitymodel.tokens/8.0.1/microsoft.identitymodel.tokens.8.0.1.nupkg.sha512",
-    "/Users/ivanhontar/.nuget/packages/system.identitymodel.tokens.jwt/8.0.1/system.identitymodel.tokens.jwt.8.0.1.nupkg.sha512"
-  ],
-  "logs": []
+  "dgSpecHash": "b4ndxAp+x0w=",
+  "success": false,
+  "projectFilePath": "D:\\ssoAuth\\authStudy\\Client\\Client.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "The local source 'D:\\Users\\ivanhontar\\Work\\cSharpAndNet\\localNuget' doesn't exist.",
+      "libraryId": "Microsoft.AspNetCore.Authentication.JwtBearer"
+    },
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "The local source 'D:\\Users\\ivanhontar\\Work\\cSharpAndNet\\localNuget' doesn't exist.",
+      "libraryId": "Microsoft.AspNetCore.Authentication.OpenIdConnect"
+    }
+  ]
 }

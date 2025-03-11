@@ -1,29 +1,50 @@
 ﻿@model IdentityServer8.Models.ModelViewModels.RegisterViewModel
 
-<h2>Register</h2>
-<form asp-action="Register" method="post">
-    <input type="hidden" asp-for="ReturnUrl" />
-    
-    <div>
-        <label asp-for="Username">Email</label>
-        <input asp-for="Username" />
+
+
+
+<body>
+    <header class="header">
+        <div class="header__container">
+            <img src="" alt="">
+        </div>
+    </header>
+    <main>
+
+        
+        <section class="registr">
+            <div class="container__registr">
+   <h2 class="registr__title">Sign up to socialRepeat</h2>
+   <div class="registr__name">
+    <div class="registr__name__fn">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" placeholder="First name" />
     </div>
 
-    <div>
+    <div class="registr__name__ln">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" placeholder="Last name" />
+    </div>
+   </div>
+   <div>
+        <label asp-for="Username">Email</label>
+        <input asp-for="Username"  />
+    </div>
+    <div class="registr__pas">
         <label asp-for="Password"></label>
         <input asp-for="Password" type="password" />
     </div>
+     <button class="registr__sigup" type="submit">Sign up</button>
+      <button class="registr__balog" type="submit">Back to login</button>
+   <form asp-action="Register" method="post">
+    <input type="hidden" asp-for="ReturnUrl" />
+    
+    
 
-    <div>
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" />
-    </div>
+   
 
-    <div>
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" />
-    </div>
 
+    
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
@@ -34,5 +55,18 @@
         </div>
     }
 
-    <button type="submit">Create account</button>
+   
 </form>
+            </div>
+
+        </section>
+    </main>
+    <footer class="footer"> 
+      <div class="footer__container">
+        <a class="footer__terms" href="">Terms alert-danger conditions</a>
+        <a class="footer__privacy" href="">Privacy policy</a>
+      </div>
+   
+ </footer>
+</body>
+
