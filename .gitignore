@@ -33,3 +33,15 @@
 
 .fake
 *.config
+
+# macOS-specific files
+.DS_Store
+
+# Windows-specific files
+Thumbs.db
+*.cache
+*.pdb
+obj/
+bin/
+*.csproj.FileListAbsolute.txt
+*.csproj.AssemblyReference.cache
