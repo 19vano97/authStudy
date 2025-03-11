@@ -1,12 +1,14 @@
 ﻿@model IdentityServer8.Models.ModelViewModels.EmailValidationViewModel
-
-<h2>Enter your email</h2>
+<section class="email">
+    <div class="email__container">
+<h2 class="email__title">Enter your email</h2>
+<p class="email__text">type in your registered email address to reset password </address></p>
 <form asp-action="EmailValidation" method="post">
     <input type="hidden" asp-for="ReturnUrl" />
     
-    <div>
+    <div class="email__emailAd">
         <label asp-for="Username">Email</label>
-        <input asp-for="Username" />
+        <input asp-for="Username" placeholder="Email Address *" />
     </div>
 
     @if (!ViewData.ModelState.IsValid)
@@ -18,6 +20,12 @@
             }
         </div>
     }
-
-    <button type="submit">Continue</button>
+<div class="email__but">
+<button class="email__but__next" type="submit">Next</button>
+<button class="email__but__back" type="submit">BACK TO LOGIN </button>
+</div>
+    
 </form>
+    </div>
+</section>
+
