@@ -9,4 +9,5 @@ public class IdentityServerSettings
     public List<ClientConfig> Clients { get; set; }
     public List<ApiResourcesConfig> ApiResources { get; set; }
     public string DefaultReturnUri { get; set; }
+    public OwnAccess OwnAccess { get; set; }
 }

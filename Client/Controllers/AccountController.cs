@@ -20,23 +20,35 @@ public class AccountController : Controller
         return SignOut(new AuthenticationProperties { RedirectUri = "/" }, "Cookies", "oidc");
     }
 
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize]
     [HttpGet("check")]
-    public IActionResult CheckAuth()
+    public async Task<IActionResult> CheckAsync()
     {
-        var accessToken = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        if (!User.Identity.IsAuthenticated)
+        {
+            return Challenge("oidc");
+        }
+
+        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
 
         if (string.IsNullOrEmpty(accessToken))
         {
-            return View("Access token is missing");
+            return View(new Token { AccessToken = "nothing", RefreshToken = "token.Issuer"});
         }
 
-        var handler = new JwtSecurityTokenHandler();
-        var token = handler.ReadJwtToken(accessToken);
-
-        var userId = token.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-        var userName = token.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
-
-        return View(new Token { AccessToken = accessToken, RefreshToken = token.Issuer});
+        try
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                var response = await client.GetAsync("https://localhost:7099/api/auth/check");
+                return View(new Token { AccessToken = accessToken, RefreshToken = response.StatusCode.ToString()});
+            }
+        }
+        catch (System.Exception)
+        {
+            return View(new Token { AccessToken = accessToken, RefreshToken = refreshToken});
+        }
     }
 }

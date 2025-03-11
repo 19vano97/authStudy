@@ -1,36 +1,38 @@
-using IdentityServer8.Models.Account;
+using System.Security.Claims;
+using IdentityServer4.Services;
+using IdentityServer8.Entities.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityServer8.Controllers.Api
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<Account> _userManager;
+        private readonly IIdentityServerInteractionService _interaction;
 
-        public AuthController(UserManager<Account> userManager)
+        public AuthController(UserManager<Account> userManager, IIdentityServerInteractionService interaction)
         {
             _userManager = userManager;
+            _interaction = interaction;
         }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Register account)
+    
+        [HttpGet("details")]
+        public async Task<ActionResult<Account>> GetAccountDetails()
         {
-            var user = new Account
-            {
-                UserName = account.Email,
-                Email = account.Email,
-            };
+            var userId = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
 
-            var result = await _userManager.CreateAsync(user, account.Password);
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest();
 
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
+            var res = await _userManager.FindByIdAsync(userId);
 
-            return Ok();
+            return Ok(res);
         }
     }
 }

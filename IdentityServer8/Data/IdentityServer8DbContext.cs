@@ -1,5 +1,5 @@
 using System;
-using IdentityServer8.Models.Account;
+using IdentityServer8.Entities.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

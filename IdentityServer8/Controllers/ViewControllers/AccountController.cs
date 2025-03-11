@@ -1,9 +1,11 @@
 using System;
+using IdentityModel.Client;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer8.Models.Account;
+using IdentityServer8.Entities.Account;
 using IdentityServer8.Models.ModelViewModels;
 using IdentityServer8.Models.Settings;
+using IdentityServer8.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -19,19 +21,22 @@ public class AccountController : Controller
     private readonly UserManager<Account> _userManager;
     private readonly IClientStore _clientStore;
     private readonly IdentityServerSettings _settings;
+    private readonly IAccountService _accountService;
 
     public AccountController(
         SignInManager<Account> signInManager, 
         UserManager<Account> userManager,
         IIdentityServerInteractionService identityServerInteractionService,
         IClientStore clientStore,
-        IOptions<IdentityServerSettings> settings)
+        IOptions<IdentityServerSettings> settings,
+        IAccountService accountService)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _interaction = identityServerInteractionService;
         _clientStore = clientStore;
         _settings = settings.Value;
+        _accountService = accountService;
     }
 
     public IActionResult Index()
@@ -48,25 +53,35 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        // var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
         if (!ModelState.IsValid) 
             return View(model);
 
-        var user = await _userManager.FindByNameAsync(model.Username);
+        // var user = await _userManager.FindByNameAsync(model.Username);
 
-        if (user != null)
+        // if (user != null)
+        // {
+        //     var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+        //     if (result.Succeeded)
+        //     {
+        //         return Redirect(model.ReturnUrl);
+        //     }
+        // }
+
+        // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+        // return View(model);
+
+        var user = await _accountService.Login(model);
+
+        if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin
+            || user.AccountStatusEnum is Enums.AccountStatusEnum.NotExisted)
         {
-            var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-
-            if (result.Succeeded)
-            {
-                return Redirect(model.ReturnUrl);
-            }
+            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            return View(model);
         }
 
-        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
-        return View(model);
+        return Redirect(model.ReturnUrl);
     }
 
     [HttpGet]
@@ -76,30 +91,43 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Register(RegisterViewModel newAccount)
+    public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        if (await _userManager.FindByNameAsync(newAccount.Username) != null)
+        // if (await _userManager.FindByNameAsync(newAccount.Username) != null)
+        // {
+        //     ModelState.AddModelError(string.Empty, "Account is already existed");
+        //     return View(newAccount);
+        // }
+
+        // var accountToAdd = new Account
+        // {
+        //     UserName = newAccount.Username,
+        //     Email = newAccount.Username,
+        //     FirstName = newAccount.FirstName,
+        //     LastName = newAccount.LastName
+        // };
+
+        // var result = await _userManager.CreateAsync(accountToAdd, newAccount.Password);
+
+        // if (!result.Succeeded)
+        //     return RedirectToAction("Error");
+
+        // await _signInManager.SignInAsync(accountToAdd, isPersistent: false);
+
+        // return Redirect(newAccount.ReturnUrl ?? "/");
+
+        var user = await _accountService.Register(model);
+
+        if (user.AccountStatusEnum is Enums.AccountStatusEnum.Existed)
         {
             ModelState.AddModelError(string.Empty, "Account is already existed");
-            return View(newAccount);
+            return View(model);
         }
 
-        var accountToAdd = new Account
-        {
-            UserName = newAccount.Username,
-            Email = newAccount.Username,
-            FirstName = newAccount.FirstName,
-            LastName = newAccount.LastName
-        };
-
-        var result = await _userManager.CreateAsync(accountToAdd, newAccount.Password);
-
-        if (!result.Succeeded)
+        if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin)
             return RedirectToAction("Error");
 
-        await _signInManager.SignInAsync(accountToAdd, isPersistent: false);
-
-        return Redirect(newAccount.ReturnUrl ?? "/");
+        return Redirect(model.ReturnUrl);
     }
 
     [HttpGet]
@@ -111,13 +139,12 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> EmailValidation(EmailValidationViewModel model)
     {
-        // var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
         if (!ModelState.IsValid) 
             return View(model);
 
-        var user = await _userManager.FindByNameAsync(model.Username);
+        var user = await _accountService.EmailValidation(model);
 
-        if (user is null)
+        if (user.AccountStatusEnum is Enums.AccountStatusEnum.NotExisted)
         {
             ModelState.AddModelError(string.Empty, "The account doesn't exist");
             

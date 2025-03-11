@@ -192,3 +192,5 @@
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.Hosting.Abstractions.dll
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.ObjectPool.dll
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Newtonsoft.Json.Bson.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/System.Net.WebSockets.WebSocketProtocol.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
