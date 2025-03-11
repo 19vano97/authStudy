@@ -1,29 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/Client.csproj": {}
+    "D:\\ssoAuth\\authStudy\\Client\\Client.csproj": {}
   },
   "projects": {
-    "/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/Client.csproj": {
+    "D:\\ssoAuth\\authStudy\\Client\\Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/Client.csproj",
+        "projectUniqueName": "D:\\ssoAuth\\authStudy\\Client\\Client.csproj",
         "projectName": "Client",
-        "projectPath": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/Client.csproj",
-        "packagesPath": "/Users/ivanhontar/.nuget/packages/",
-        "outputPath": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/Client/obj/",
+        "projectPath": "D:\\ssoAuth\\authStudy\\Client\\Client.csproj",
+        "packagesPath": "C:\\Users\\vanil\\.nuget\\packages\\",
+        "outputPath": "D:\\ssoAuth\\authStudy\\Client\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/ivanhontar/Work/cSharpAndNet/authStudy/NuGet.Config",
-          "/Users/ivanhontar/.nuget/NuGet/NuGet.Config"
+          "D:\\ssoAuth\\authStudy\\NuGet.Config",
+          "C:\\Users\\vanil\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/Users/ivanhontar/Work/cSharpAndNet/localNuget": {},
-          "/Users/ivanhontar/Work/cSharpAndNet/localNuget": {},
-          "/Users/ivanhontar/Work/cSharpAndNet/localNuget/identity4": {},
+          "D:\\Users\\ivanhontar\\Work\\cSharpAndNet\\localNuget": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -76,7 +74,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
