@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Client.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace Client.Controllers;
 
@@ -25,19 +26,32 @@ public class HomeController : Controller
             return View(new Token { AccessToken = "nothing", RefreshToken = "token.Issuer"});
         }
 
-        try
+        // try
+        // {
+        //     using (HttpClient client = new HttpClient())
+        //     {
+        //         client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+        //         var responce = await client.GetAsync("https://localhost:7099/api/auth/check");
+        //         return View(new Token { AccessToken = accessToken, RefreshToken = responce.StatusCode.ToString()});
+        //     }
+        // }
+        // catch (System.Exception)
+        // {
+        //     return View(new Token { AccessToken = accessToken, RefreshToken = refreshToken});
+        // }
+
+        if (User.Identity.IsAuthenticated)
         {
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-                var responce = await client.GetAsync("https://localhost:7099/api/auth/check");
-                return View(new Token { AccessToken = accessToken, RefreshToken = responce.StatusCode.ToString()});
-            }
+            var userId = User.FindFirst("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+            // return Content($"Authenticated user ID: {userId}");
+            return View(new Token { AccessToken = accessToken, RefreshToken = userId.ToString()});
         }
-        catch (System.Exception)
+        else
         {
             return View(new Token { AccessToken = accessToken, RefreshToken = refreshToken});
         }
+
+        return View(new Token { AccessToken = accessToken, RefreshToken = refreshToken});
     }
 
     

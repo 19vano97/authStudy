@@ -1,7 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Identity;
 
-namespace IdentityServer8.Models.Account;
+namespace IdentityServer8.Entities.Account;
 
 public class Account : IdentityUser
 {

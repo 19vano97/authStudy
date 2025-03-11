@@ -7,7 +7,11 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = "Cookies";
     options.DefaultChallengeScheme = "oidc";
 })
-    .AddCookie("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    })
     .AddOpenIdConnect("oidc", options =>
     {
         options.Authority = "https://localhost:7270";
@@ -32,10 +36,10 @@ builder.WebHost.ConfigureKestrel(options =>
         listenOptions.UseHttps(); 
     });
 });
-builder.Services.AddLogging(logging =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    logging.AddConsole();
-    logging.SetMinimumLevel(LogLevel.Debug);
+    options.Cookie.SameSite = SameSiteMode.Lax; // Ensure cookies are set properly
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 var app = builder.Build();
@@ -52,8 +56,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapStaticAssets();
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace IdentityServer8.Models.Account;
+namespace IdentityServer8.Entities.Account;
 
 public class Register
 {
