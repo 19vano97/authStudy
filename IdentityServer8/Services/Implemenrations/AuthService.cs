@@ -1,6 +1,6 @@
 using System;
 using System.Security.Claims;
-using IdentityServer8.Models.Account;
+using IdentityServer8.Entities.Account;
 using IdentityServer8.Services.Interfaces;
 
 namespace IdentityServer8.Services.Implemenrations;

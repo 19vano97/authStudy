@@ -3,7 +3,7 @@ using System.Security.Claims;
 using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using IdentityServer8.Models.Account;
+using IdentityServer8.Entities.Account;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityServer8.Services.Implemenrations;

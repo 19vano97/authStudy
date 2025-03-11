@@ -8,6 +8,7 @@ using IdentityServer8.Entities.Account;
 using IdentityServer8.Models.Settings;
 using IdentityServer8.Services;
 using IdentityServer8.Services.Implemenrations;
+using IdentityServer8.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,8 @@ builder.WebHost.ConfigureKestrel(options =>
     });
 });
 builder.Services.AddTransient<IProfileService, CustomProfile>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactClient",

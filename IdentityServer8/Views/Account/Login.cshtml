@@ -5,90 +5,37 @@
 @{
     var returnUrl = ViewContext.HttpContext.Request.GetReturnUrl();
 }
-@* <form asp-action="Login" method="post">
-    <input type="hidden" asp-for="ReturnUrl" /> *@
-    
-    
 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <header class="header">
-        <div class="header__container">
-            <img src="" alt="" width="244" height="40">
+<div class="right__form">
+    <form asp-action="Login" method="post">
+        <h2 class="right__titile">Sign in</h2>
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="right__form__email">
+            <label asp-for="Username">Email</label >
+            <input asp-for="Username" placeholder="Email Address *" />
         </div>
-
-    </header>
-
-  <section class="left">
-    <div class="container__left">
-        <img src="" alt="">
-    </div>
-  </section>
-  <section class="right">
-  <div class="container__right" asp-action="Login" method="post">
-
-  <h2 class="right__titile">Sign in</h2>
-  <input type="hidden" asp-for="ReturnUrl" />
- <div class="right__form">
-      <div class="right__form__email">
-        <label asp-for="Username"></label >
-        <input asp-for="Username" placeholder="Email Address *" />
-      </div>
-      
-      <div class="right__form__pas">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password"  placeholder="Password *"/>
-    </div>
-    <div class="right__form__but">
-   <button type="submit">Login</button>
-    <button><a class="main-link" asp-action="EmailValidation" asp-route-ReturnUrl="@returnUrl">Forgot password</a></button>
-    
-    </div>
-     <button><a class="main-link" asp-action="Register" asp-route-ReturnUrl="@returnUrl">CREATE NEW ACCOUNT</a></button>
-    
-
-
-
-
-    </div>
-
-  </div>
-  </section>
-  
-
-    
-   
-
-    
-
-    
-
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <p>@error.ErrorMessage</p>
-            }
+        <div class="right__form__pas">
+            <label asp-for="Password">Password</label>
+            <input asp-for="Password" type="password"  placeholder="Password *"/>
         </div>
-    }
+        <div class="right__form__but">
+            <button type="submit">Login</button>
+            <button><a class="main-link" asp-action="EmailValidation" asp-route-ReturnUrl="@returnUrl">Forgot password</a></button>
+        </div>
+        <button><a class="main-link" asp-action="Register" asp-route-ReturnUrl="@returnUrl">CREATE NEW ACCOUNT</a></button>
+    </form>
+</div>
 
-<footer class="footer"> 
-      <div class="footer__container">
-        <a class="footer__terms" href="">Terms and conditions</a>
-        <a class="footer__privacy" href="">Privacy policy</a>
-      </div>
-   
- </footer>
-</body>
-</html>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
 
 
