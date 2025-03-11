@@ -1,31 +1,34 @@
-﻿@model IdentityServer8.Models.ModelViewModels.EmailValidationViewModel
-<section class="email">
-    <div class="email__container">
-<h2 class="email__title">Enter your email</h2>
-<p class="email__text">type in your registered email address to reset password </address></p>
-<form asp-action="EmailValidation" method="post">
-    <input type="hidden" asp-for="ReturnUrl" />
-    
-    <div class="email__emailAd">
-        <label asp-for="Username">Email</label>
-        <input asp-for="Username" placeholder="Email Address *" />
-    </div>
+﻿@using IdentityServer8.Extensions
 
-    @if (!ViewData.ModelState.IsValid)
-    {
-        <div class="alert alert-danger">
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <p>@error.ErrorMessage</p>
-            }
+@{
+    var returnUrl = ViewContext.HttpContext.Request.GetReturnUrl();
+}
+
+@model IdentityServer8.Models.ModelViewModels.EmailValidationViewModel
+
+<div class="email__container">
+    <form asp-action="EmailValidation" method="post">
+        <h2 class="email__title">Enter your email</h2>
+        <p class="email__text">type in your registered email address to reset password </address></p>
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="email__emailAd">
+            <label asp-for="Username">Email</label>
+            <input asp-for="Username" placeholder="Email Address *" />
         </div>
-    }
-<div class="email__but">
-<button class="email__but__next" type="submit">Next</button>
-<button class="email__but__back" type="submit">BACK TO LOGIN </button>
-</div>
-    
-</form>
-    </div>
-</section>
 
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+        <div class="email__but">
+            <button class="email__but__next" type="submit">Next</button>
+            <button><a class="register__backLogin" asp-action="Login" asp-route-ReturnUrl="@returnUrl">Back to login</a></button>
+        </div>
+    </form>
+</div>

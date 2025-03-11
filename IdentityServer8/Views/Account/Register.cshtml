@@ -1,50 +1,36 @@
-﻿@model IdentityServer8.Models.ModelViewModels.RegisterViewModel
+﻿@using IdentityServer8.Extensions
+@model IdentityServer8.Models.ModelViewModels.RegisterViewModel
+
+@{
+    var returnUrl = ViewContext.HttpContext.Request.GetReturnUrl();
+}
 
 
-
-
-<body>
-    <header class="header">
-        <div class="header__container">
-            <img src="" alt="">
+<div class="container__register">
+    <form asp-action="Register" method="post">
+    <h2 class="register__title">Sign up to socialRepeat</h2>
+    <div class="register__name">
+        <input type="hidden" asp-for="ReturnUrl" />
+        <div class="register__name__fn">
+            <label asp-for="FirstName">First name</label>
+            <input asp-for="FirstName" placeholder="First name" />
         </div>
-    </header>
-    <main>
-
-        
-        <section class="registr">
-            <div class="container__registr">
-   <h2 class="registr__title">Sign up to socialRepeat</h2>
-   <div class="registr__name">
-    <div class="registr__name__fn">
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" placeholder="First name" />
+        <div class="register__name__ln">
+            <label asp-for="LastName">Last nname</label>
+            <input asp-for="LastName" placeholder="Last name" />
+        </div>
     </div>
-
-    <div class="registr__name__ln">
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" placeholder="Last name" />
-    </div>
-   </div>
-   <div>
+    <div>
         <label asp-for="Username">Email</label>
         <input asp-for="Username"  />
     </div>
-    <div class="registr__pas">
-        <label asp-for="Password"></label>
+    <div class="register__pas">
+        <label asp-for="Password">Password</label>
         <input asp-for="Password" type="password" />
     </div>
-     <button class="registr__sigup" type="submit">Sign up</button>
-      <button class="registr__balog" type="submit">Back to login</button>
-   <form asp-action="Register" method="post">
-    <input type="hidden" asp-for="ReturnUrl" />
-    
-    
+    <button class="register__signup" type="submit">Create new account</button>
+    <button><a class="register__backLogin" asp-action="Login" asp-route-ReturnUrl="@returnUrl">Back to login</a></button>
 
-   
-
-
-    
     @if (!ViewData.ModelState.IsValid)
     {
         <div class="alert alert-danger">
@@ -54,19 +40,7 @@
             }
         </div>
     }
+    </form>
+</div>
 
-   
-</form>
-            </div>
-
-        </section>
-    </main>
-    <footer class="footer"> 
-      <div class="footer__container">
-        <a class="footer__terms" href="">Terms alert-danger conditions</a>
-        <a class="footer__privacy" href="">Privacy policy</a>
-      </div>
-   
- </footer>
-</body>
 
