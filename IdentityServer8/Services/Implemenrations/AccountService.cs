@@ -16,46 +16,61 @@ namespace IdentityServer8.Services.Implemenrations;
 public class AccountService(
         SignInManager<Account> signInManager, 
         UserManager<Account> userManager,
-        IIdentityServerInteractionService identityServerInteractionService,
         IClientStore clientStore,
-        IOptions<IdentityServerSettings> settings) : IAccountService
+        IOptions<IdentityServerSettings> settings,
+        IIdentityServerInteractionService interaction) : IAccountService
 {
     public async Task<AccountStatusDto> EmailValidation(EmailValidationViewModel model)
     {
-        var user = await IsAccountExisted(email: model.Username);
+        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
 
         if (user is null)
-            return SetAccountStatusFromAccount();
+            return GeneralMethods.SetAccountStatusFromAccount();
 
-        return SetAccountStatusFromAccount(await IsAccountExisted(email: model.Username), AccountStatusEnum.Existed);
+        return GeneralMethods.SetAccountStatusFromAccount(
+                await GeneralMethods.IsAccountExisted(userManager, email: model.Username),
+                    AccountStatusEnum.Existed);
     }
 
     public async Task<AccountStatusDto> Login(LoginViewModel model)
     {
-        var user = await IsAccountExisted(email: model.Username);
+        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
 
         if (user is null)
-            return SetAccountStatusFromAccount();
+            return GeneralMethods.SetAccountStatusFromAccount();
 
         var loginProcess = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
 
         if (!loginProcess.Succeeded)
-            return SetAccountStatusFromAccount(user, AccountStatusEnum.IssueWithLogin);
+            return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.IssueWithLogin);
 
-        return SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
+        return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
     }
 
-    public Task<ActionResult> Logout(string logoutId)
+    public async Task<string> Logout(string logoutId)
     {
-        throw new NotImplementedException();
+        var logoutRequest = await interaction.GetLogoutContextAsync(logoutId);
+        var postLogoutRedirectUri = settings.Value.DefaultReturnUri;
+
+        if (!string.IsNullOrEmpty(logoutRequest?.ClientId))
+        {
+            var client = clientStore.FindClientByIdAsync(logoutRequest.ClientId).Result;
+            
+            if (client != null && client.PostLogoutRedirectUris.Any())
+                postLogoutRedirectUri = client.PostLogoutRedirectUris.First();
+        }
+
+        await signInManager.SignOutAsync();
+
+        return postLogoutRedirectUri;
     }
 
     public async Task<AccountStatusDto> Register(RegisterViewModel model)
     {
-        var user = await IsAccountExisted(email: model.Username);
+        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
 
         if (user != null)
-            return SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
+            return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
 
         var accountToAdd = new Account
         {
@@ -68,51 +83,59 @@ public class AccountService(
         var result = await userManager.CreateAsync(accountToAdd, model.Password);
 
         if (!result.Succeeded)
-            return SetAccountStatusFromAccount(accountToAdd, AccountStatusEnum.IssueWithLogin);
+            return GeneralMethods.SetAccountStatusFromAccount(accountToAdd, AccountStatusEnum.IssueWithLogin);
 
         await signInManager.SignInAsync(accountToAdd, isPersistent: false);
 
-        return SetAccountStatusFromAccount(accountToAdd, AccountStatusEnum.Existed);;
+        return GeneralMethods.SetAccountStatusFromAccount(accountToAdd, AccountStatusEnum.Existed);;
     }
 
-    public Task<AccountStatusDto> ResetPassword(ResetPasswordViewModel model)
+    public async Task<AccountStatusDto> ResetPassword(ResetPasswordViewModel model)
     {
-        throw new NotImplementedException();
+        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await userManager.ResetPasswordAsync(user, token, model.Password);
+        
+        if (!result.Succeeded || user is null)
+            return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.IssueWithLogin);
+
+        await signInManager.SignInAsync(user, isPersistent: false);
+        
+        return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
     }
 
-    private static AccountStatusDto SetAccountStatusFromAccount(Account account = null, 
-        AccountStatusEnum accountStatus = AccountStatusEnum.NotExisted)
-    {
-        if (account is null)
-            return new AccountStatusDto
-            {
-                Account = null,
-                AccountStatusEnum = accountStatus
-            };
+    // private static AccountStatusDto SetAccountStatusFromAccount(Account account = null, 
+    //     AccountStatusEnum accountStatus = AccountStatusEnum.NotExisted)
+    // {
+    //     if (account is null)
+    //         return new AccountStatusDto
+    //         {
+    //             Account = null,
+    //             AccountStatusEnum = accountStatus
+    //         };
 
-        return new AccountStatusDto
-        {
-            Account = new AccountDto
-            {
-                Id = Guid.Parse(account.Id),
-                Email = account.Email,
-                FirstName = account.FirstName,
-                LastName = account.LastName,
-                CreateDate = (DateTime)account.CreateDate
-            },
-            AccountStatusEnum = accountStatus
-        };
-    }
+    //     return new AccountStatusDto
+    //     {
+    //         Account = new AccountDto
+    //         {
+    //             Id = Guid.Parse(account.Id),
+    //             Email = account.Email!,
+    //             FirstName = account.FirstName,
+    //             LastName = account.LastName,
+    //             CreateDate = (DateTime)account.CreateDate!
+    //         },
+    //         AccountStatusEnum = accountStatus
+    //     };
+    // }
 
-    public async Task<Account> IsAccountExisted(string id = null, string email = null)
-    {
-        if (id != null)
-            return await userManager.FindByIdAsync(id) ?? null;
+    // public async Task<Account> IsAccountExisted(string id = null, string email = null)
+    // {
+    //     if (id != null)
+    //         return await userManager.FindByIdAsync(id) ?? null!;
 
-        if (email != null)
-            return await userManager.FindByEmailAsync(email) ?? null;
+    //     if (email != null)
+    //         return await userManager.FindByEmailAsync(email) ?? null!;
             
-
-        return null;
-    }
+    //     return null!;
+    // }
 }
