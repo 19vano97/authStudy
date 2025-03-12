@@ -14,5 +14,5 @@ public interface IAccountService
     Task<AccountStatusDto> Register(RegisterViewModel model);
     Task<AccountStatusDto> EmailValidation(EmailValidationViewModel model);
     Task<AccountStatusDto> ResetPassword(ResetPasswordViewModel model);
-    Task<ActionResult> Logout(string logoutId);
+    Task<string> Logout(string logoutId);
 }
