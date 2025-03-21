@@ -1,7 +1,12 @@
+using Client.Controllers;
+using Client.Services.Implementations;
+using Client.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ITokenRefreshService, TokenRefreshService>();
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = "Cookies";
@@ -41,6 +46,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.SameSite = SameSiteMode.Lax; // Ensure cookies are set properly
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+builder.Services.AddHttpClient<ITokenRefreshService>();
+builder.Services.AddHttpClient<HomeController>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

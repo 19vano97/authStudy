@@ -4,21 +4,29 @@ using Client.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Client.Services.Interfaces;
 
 namespace Client.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly ITokenRefreshService _tokenRefresh;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger,
+        ITokenRefreshService tokenRefresh)
     {
         _logger = logger;
+        _tokenRefresh = tokenRefresh;
     }
 
     public async Task<IActionResult> IndexAsync()
     {
-        var accessToken = await HttpContext.GetTokenAsync("access_token");
+        var accessToken = await _tokenRefresh.GetAccessTokenAsync();
+
+        if (string.IsNullOrEmpty(accessToken))
+            return View();
+
         var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
 
         if (string.IsNullOrEmpty(accessToken))

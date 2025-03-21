@@ -10,4 +10,6 @@ public class IdentityServerSettings
     public List<ApiResourcesConfig> ApiResources { get; set; }
     public string DefaultReturnUri { get; set; }
     public OwnAccess OwnAccess { get; set; }
+    public bool EnableTokenCleanup { get; set; }
+    public int TokenCleanupInterval { get; set; }
 }
