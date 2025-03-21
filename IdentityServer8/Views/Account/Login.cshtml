@@ -22,6 +22,9 @@
         <div class="right__form__but">
             <button type="submit">Login</button>
             <button><a class="main-link" asp-action="EmailValidation" asp-route-ReturnUrl="@returnUrl">Forgot password</a></button>
+            <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Microsoft" asp-route-ReturnUrl="@returnUrl">
+                Sign in with Microsoft
+            </a>
         </div>
         <button><a class="main-link" asp-action="Register" asp-route-ReturnUrl="@returnUrl">CREATE NEW ACCOUNT</a></button>
     </form>

@@ -103,39 +103,4 @@ public class AccountService(
         
         return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
     }
-
-    // private static AccountStatusDto SetAccountStatusFromAccount(Account account = null, 
-    //     AccountStatusEnum accountStatus = AccountStatusEnum.NotExisted)
-    // {
-    //     if (account is null)
-    //         return new AccountStatusDto
-    //         {
-    //             Account = null,
-    //             AccountStatusEnum = accountStatus
-    //         };
-
-    //     return new AccountStatusDto
-    //     {
-    //         Account = new AccountDto
-    //         {
-    //             Id = Guid.Parse(account.Id),
-    //             Email = account.Email!,
-    //             FirstName = account.FirstName,
-    //             LastName = account.LastName,
-    //             CreateDate = (DateTime)account.CreateDate!
-    //         },
-    //         AccountStatusEnum = accountStatus
-    //     };
-    // }
-
-    // public async Task<Account> IsAccountExisted(string id = null, string email = null)
-    // {
-    //     if (id != null)
-    //         return await userManager.FindByIdAsync(id) ?? null!;
-
-    //     if (email != null)
-    //         return await userManager.FindByEmailAsync(email) ?? null!;
-            
-    //     return null!;
-    // }
 }

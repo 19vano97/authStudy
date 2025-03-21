@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using IdentityModel.Client;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
@@ -14,7 +15,10 @@ using Microsoft.Extensions.Options;
 
 namespace IdentityServer8.Controllers.ViewControllers;
 
-public class AccountController(IAccountService accountService) : Controller
+public class AccountController(IAccountService accountService, 
+                               SignInManager<Account> _signInManager, 
+                               UserManager<Account> _userManager,
+                               IThirdPartyLogin thirdPartyLogin) : Controller
 {
     public IActionResult Index()
     {
@@ -32,22 +36,6 @@ public class AccountController(IAccountService accountService) : Controller
     {
         if (!ModelState.IsValid) 
             return View(model);
-
-        // var user = await _userManager.FindByNameAsync(model.Username);
-
-        // if (user != null)
-        // {
-        //     var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-
-        //     if (result.Succeeded)
-        //     {
-        //         return Redirect(model.ReturnUrl);
-        //     }
-        // }
-
-        // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
-        // return View(model);
 
         var user = await accountService.Login(model);
 
@@ -70,29 +58,6 @@ public class AccountController(IAccountService accountService) : Controller
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        // if (await _userManager.FindByNameAsync(newAccount.Username) != null)
-        // {
-        //     ModelState.AddModelError(string.Empty, "Account is already existed");
-        //     return View(newAccount);
-        // }
-
-        // var accountToAdd = new Account
-        // {
-        //     UserName = newAccount.Username,
-        //     Email = newAccount.Username,
-        //     FirstName = newAccount.FirstName,
-        //     LastName = newAccount.LastName
-        // };
-
-        // var result = await _userManager.CreateAsync(accountToAdd, newAccount.Password);
-
-        // if (!result.Succeeded)
-        //     return RedirectToAction("Error");
-
-        // await _signInManager.SignInAsync(accountToAdd, isPersistent: false);
-
-        // return Redirect(newAccount.ReturnUrl ?? "/");
-
         var user = await accountService.Register(model);
 
         if (user.AccountStatusEnum is Enums.AccountStatusEnum.Existed)
@@ -179,4 +144,29 @@ public class AccountController(IAccountService accountService) : Controller
     {
         return View();
     }
+
+    public IActionResult ExternalLogin(string provider, string returnUrl = "/")
+    {
+        if (provider == "Microsoft")
+        {
+            var redirectUrl = Url.Action(nameof(MicrosoftExternalLoginCallback), "Account", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+            return Challenge(properties, "MicrosoftOIDC"); 
+        }
+
+        return RedirectToAction("Error", "Home");
+    }
+
+
+    public async Task<IActionResult> MicrosoftExternalLoginCallback(string returnUrl = "/")
+    {
+        var tlp = await thirdPartyLogin.MicrosoftTPLCallback();
+
+        if (tlp.AccountStatusEnum == Enums.AccountStatusEnum.NotExisted)
+            return RedirectToAction("Login", returnUrl);
+
+        return LocalRedirect(returnUrl);
+    }
+
 }

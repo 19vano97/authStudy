@@ -33,6 +33,15 @@ public static class GeneralMethods
                 AccountStatusEnum = AccountStatusEnum.Existed
             };
 
+        if (account is null && accountStatus != AccountStatusEnum.None)
+        {
+            return new AccountStatusDto
+            {
+                Account = null!,
+                AccountStatusEnum = accountStatus
+            };
+        }    
+        
         return new AccountStatusDto
         {
             Account = new AccountDto
