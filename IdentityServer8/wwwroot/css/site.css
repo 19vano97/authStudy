@@ -12,11 +12,68 @@
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
+/* html {
   position: relative;
   min-height: 100%;
-}
+} */
 
 body {
-  margin-bottom: 60px;
+  /* margin-bottom: 60px; */
+}
+header{
+  margin-left: 55px;
+  margin-top:30px ;
+ 
+  
+ 
+ 
+}
+footer{
+  display: flex;
+  justify-content: center;
+ 
+  
+}
+.footer__container{
+  margin-bottom: 20px;
+}
+.footer__terms{
+  text-decoration: none;
+}
+.footer__privacy{
+  text-decoration: none;
+}
+.page{
+  display: flex;  
+}
+.right{
+ width: 608px;
+ background-color: #FAFAFB;
+ position: relative;
+  
+  border-radius: 10%;
+
+}
+.right__container{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%); 
+}
+
+.left{
+ 
+  width: 1205px;
+}
+.left__container{
+  position: relative;
+  height: 85vh;
+  
+}
+.left__container__foto{
+    
+   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%); 
 }

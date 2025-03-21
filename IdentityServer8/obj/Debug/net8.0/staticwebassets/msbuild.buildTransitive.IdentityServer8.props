@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="../buildMultiTargeting/IdentityServer8.props" />
+  <Import Project="..\buildMultiTargeting\IdentityServer8.props" />
 </Project>

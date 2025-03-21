@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IdentityServer8")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d0801ecdc6eb320e1f1ad6e28f4731c74b6d7aad")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3d09db78e4750d540cfcea743a69cb2f6e562f5")]
 [assembly: System.Reflection.AssemblyProductAttribute("IdentityServer8")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IdentityServer8")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

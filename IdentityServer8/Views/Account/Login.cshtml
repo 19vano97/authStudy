@@ -17,8 +17,17 @@
         </div>
         <div class="right__form__pas">
             <label asp-for="Password">Password</label>
-            <input asp-for="Password" type="password"  placeholder="Password *"/>
+            <input asp-for="Password" type="password"  placeholder="Password*">
         </div>
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
         <div class="right__form__but">
             <button type="submit">Login</button>
             <button><a class="main-link" asp-action="EmailValidation" asp-route-ReturnUrl="@returnUrl">Forgot password</a></button>
@@ -26,16 +35,6 @@
         <button><a class="main-link" asp-action="Register" asp-route-ReturnUrl="@returnUrl">CREATE NEW ACCOUNT</a></button>
     </form>
 </div>
-
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
-}
 
 
 
