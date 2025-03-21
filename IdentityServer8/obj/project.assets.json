@@ -6187,28 +6187,26 @@
     ]
   },
   "packageFolders": {
-    "/Users/ivanhontar/.nuget/packages/": {}
+    "C:\\Users\\vanil\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/IdentityServer8.csproj",
+      "projectUniqueName": "D:\\ssoAuth\\authStudy\\IdentityServer8\\IdentityServer8.csproj",
       "projectName": "IdentityServer8",
-      "projectPath": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/IdentityServer8.csproj",
-      "packagesPath": "/Users/ivanhontar/.nuget/packages/",
-      "outputPath": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/obj/",
+      "projectPath": "D:\\ssoAuth\\authStudy\\IdentityServer8\\IdentityServer8.csproj",
+      "packagesPath": "C:\\Users\\vanil\\.nuget\\packages\\",
+      "outputPath": "D:\\ssoAuth\\authStudy\\IdentityServer8\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/ivanhontar/Work/cSharpAndNet/authStudy/NuGet.Config",
-        "/Users/ivanhontar/.nuget/NuGet/NuGet.Config"
+        "D:\\ssoAuth\\authStudy\\NuGet.Config",
+        "C:\\Users\\vanil\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "/Users/ivanhontar/Work/cSharpAndNet/localNuget": {},
-        "/Users/ivanhontar/Work/cSharpAndNet/localNuget": {},
-        "/Users/ivanhontar/Work/cSharpAndNet/localNuget/identity4": {},
+        "D:\\ssoAuth\\localNuget\\localNuget\\identity4": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -6299,7 +6297,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
