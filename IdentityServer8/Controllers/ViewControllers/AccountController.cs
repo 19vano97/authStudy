@@ -26,7 +26,7 @@ public class AccountController(IAccountService accountService,
     }
 
     [HttpGet]
-    public IActionResult Login(string returnUrl = "/")
+    public IActionResult Login(string returnUrl)
     {
         return View(new LoginViewModel { ReturnUrl = returnUrl });
     }
@@ -50,7 +50,7 @@ public class AccountController(IAccountService accountService,
     }
 
     [HttpGet]
-    public IActionResult Register(string returnUrl = "/")
+    public IActionResult Register(string returnUrl)
     {
         return View(new RegisterViewModel { ReturnUrl = returnUrl });
     }
@@ -63,7 +63,7 @@ public class AccountController(IAccountService accountService,
         if (user.AccountStatusEnum is Enums.AccountStatusEnum.Existed)
         {
             ModelState.AddModelError(string.Empty, "Account is already existed");
-            return View(model);
+            return View(model.ReturnUrl);
         }
 
         if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin)
@@ -145,7 +145,7 @@ public class AccountController(IAccountService accountService,
         return View();
     }
 
-    public IActionResult ExternalLogin(string provider, string returnUrl = "/")
+    public IActionResult ExternalLogin(string provider, string returnUrl)
     {
         if (provider == "Microsoft")
         {
@@ -159,7 +159,7 @@ public class AccountController(IAccountService accountService,
     }
 
 
-    public async Task<IActionResult> MicrosoftExternalLoginCallback(string returnUrl = "/")
+    public async Task<IActionResult> MicrosoftExternalLoginCallback(string returnUrl)
     {
         var tlp = await thirdPartyLogin.MicrosoftTPLCallback();
 

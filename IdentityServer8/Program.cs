@@ -82,40 +82,36 @@ builder.Services.AddAuthentication(options =>
     })
     .AddJwtBearer(msLogin.JwtMsLogin.Name, options =>
     {
-        options.Authority = $"https://login.microsoftonline.com/{msLogin.TenantId}/v2.0"; // Correct authority
-        options.Audience = msLogin.JwtMsLogin.Audience; // Microsoft Client ID from Azure
+        options.Authority = $"https://login.microsoftonline.com/{msLogin.TenantId}/v2.0"; 
+        options.Audience = msLogin.JwtMsLogin.Audience;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = $"https://login.microsoftonline.com/{msLogin.TenantId}/v2.0", // Correct tenant ID issuer
+            ValidIssuer = $"https://login.microsoftonline.com/{msLogin.TenantId}/v2.0",
             ValidateAudience = true,
-            ValidAudience = msLogin.JwtMsLogin.Audience, // Correct audience (your app client ID)
+            ValidAudience = msLogin.JwtMsLogin.Audience,
             ValidateLifetime = true
         };
     })
     .AddOpenIdConnect(msLogin.OidcMsLogin.Name, options =>
     {
-        options.SignInScheme = msLogin.OidcMsLogin.SignInScheme; // IdentityServer scheme for external authentication
-        options.Authority = msLogin.OidcMsLogin.Authority; // Correct authority for your tenant
+        options.SignInScheme = msLogin.OidcMsLogin.SignInScheme; 
+        options.Authority = msLogin.OidcMsLogin.Authority;
         options.ClientId = msLogin.ClientId;
         options.ClientSecret = msLogin.ClientSecret;
         options.ResponseType = msLogin.OidcMsLogin.ResponseType;
-        options.SaveTokens = msLogin.OidcMsLogin.SaveTokens; // Store tokens for later use
-        options.CallbackPath = msLogin.OidcMsLogin.CallbackPath; // Redirect URL
+        options.SaveTokens = msLogin.OidcMsLogin.SaveTokens;
+        options.CallbackPath = msLogin.OidcMsLogin.CallbackPath;
         options.Scope.Add("Calendars.Read");
         options.Scope.Add("offline_access");
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = msLogin.OidcMsLogin.Authority, // Correct issuer for your tenant
+            ValidIssuer = msLogin.OidcMsLogin.Authority,
             ValidateAudience = true,
-            ValidAudience = msLogin.ClientId, // Correct audience (your app client ID)
+            ValidAudience = msLogin.ClientId,
             ValidateLifetime = true
         };
-        // foreach (var item in identityServerSettings.ApiResources.Where(r => r.Name == msLogin.OidcMsLogin.Resource).Select(r => r.Scopes).First())
-        // {
-        //     options.Scope.Add(item);
-        // }
     });
 
 

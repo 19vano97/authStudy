@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IdentityServer8.Controllers.Api
 {
     [Authorize(AuthenticationSchemes = "Bearer")]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController(IAuthService authService) : ControllerBase
     {
@@ -26,5 +26,7 @@ namespace IdentityServer8.Controllers.Api
 
             return Ok(user.Account);
         }
+
+        
     }
 }
