@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "EzwwPDlcJwCCgk2bowik4HSMujFY9CA8GVfWM4qkLMw=",
+  "Hash": "6WZIwliY6M+vHv7nIJtbyyFM9yYOoyUnc8Aq/zFkKbs=",
   "Source": "IdentityServer8",
   "BasePath": "_content/IdentityServer8",
   "Mode": "Default",
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "7tzq44ctie",
-      "Integrity": "NbTvFXWxY+2zfXfcmhbHF+Wb6BLSbCs8DIp1cMcy+0Q=",
+      "Fingerprint": "vv4clpmh8p",
+      "Integrity": "RYP5AaT3ayGyC2eYQWPCiK+uhrvBiJfIbfhDN6a+6sQ=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/css/site.css"
@@ -99,6 +99,48 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/favicon.ico"
+    },
+    {
+      "Identity": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/login.png",
+      "SourceId": "IdentityServer8",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/",
+      "BasePath": "_content/IdentityServer8",
+      "RelativePath": "img/login#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "rsfnxafe1a",
+      "Integrity": "u0gLzhc/mKtORMADOerSp09CyP/Y2UZCAMbOQkR5I0k=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/img/login.png"
+    },
+    {
+      "Identity": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/sr-logo.png",
+      "SourceId": "IdentityServer8",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/",
+      "BasePath": "_content/IdentityServer8",
+      "RelativePath": "img/sr-logo#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "xs3niasvgt",
+      "Integrity": "/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/img/sr-logo.png"
     },
     {
       "Identity": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/site.js",
@@ -1321,51 +1363,6 @@
   ],
   "Endpoints": [
     {
-      "Route": "css/site.7tzq44ctie.css",
-      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/css/site.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "345"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"NbTvFXWxY+2zfXfcmhbHF+Wb6BLSbCs8DIp1cMcy+0Q=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Mon, 03 Mar 2025 20:04:20 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "7tzq44ctie"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-NbTvFXWxY+2zfXfcmhbHF+Wb6BLSbCs8DIp1cMcy+0Q="
-        }
-      ]
-    },
-    {
       "Route": "css/site.css",
       "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/css/site.css",
       "Selectors": [],
@@ -1376,7 +1373,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "345"
+          "Value": "1046"
         },
         {
           "Name": "Content-Type",
@@ -1384,11 +1381,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"NbTvFXWxY+2zfXfcmhbHF+Wb6BLSbCs8DIp1cMcy+0Q=\""
+          "Value": "\"RYP5AaT3ayGyC2eYQWPCiK+uhrvBiJfIbfhDN6a+6sQ=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Mon, 03 Mar 2025 20:04:20 GMT"
+          "Value": "Fri, 21 Mar 2025 18:50:43 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1398,7 +1395,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-NbTvFXWxY+2zfXfcmhbHF+Wb6BLSbCs8DIp1cMcy+0Q="
+          "Value": "sha256-RYP5AaT3ayGyC2eYQWPCiK+uhrvBiJfIbfhDN6a+6sQ="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.vv4clpmh8p.css",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/css/site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1046"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"RYP5AaT3ayGyC2eYQWPCiK+uhrvBiJfIbfhDN6a+6sQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 21 Mar 2025 18:50:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "vv4clpmh8p"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-RYP5AaT3ayGyC2eYQWPCiK+uhrvBiJfIbfhDN6a+6sQ="
         }
       ]
     },
@@ -1645,6 +1687,170 @@
         {
           "Name": "integrity",
           "Value": "sha256-bmFS+yaomWFGDvLBlWA4gHmSexl8yuFpYLzeDBX85/0="
+        }
+      ]
+    },
+    {
+      "Route": "img/login.png",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/login.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "22296"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"u0gLzhc/mKtORMADOerSp09CyP/Y2UZCAMbOQkR5I0k=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 21 Mar 2025 18:50:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-u0gLzhc/mKtORMADOerSp09CyP/Y2UZCAMbOQkR5I0k="
+        }
+      ]
+    },
+    {
+      "Route": "img/login.rsfnxafe1a.png",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/login.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "22296"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"u0gLzhc/mKtORMADOerSp09CyP/Y2UZCAMbOQkR5I0k=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 21 Mar 2025 18:50:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "rsfnxafe1a"
+        },
+        {
+          "Name": "label",
+          "Value": "img/login.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-u0gLzhc/mKtORMADOerSp09CyP/Y2UZCAMbOQkR5I0k="
+        }
+      ]
+    },
+    {
+      "Route": "img/sr-logo.png",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/sr-logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2856"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 21 Mar 2025 18:50:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE="
+        }
+      ]
+    },
+    {
+      "Route": "img/sr-logo.xs3niasvgt.png",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/sr-logo.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2856"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 21 Mar 2025 18:50:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "xs3niasvgt"
+        },
+        {
+          "Name": "label",
+          "Value": "img/sr-logo.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE="
         }
       ]
     },

@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/login.png",
+      "PackagePath": "staticwebassets/img/login.png"
+    },
+    {
+      "Id": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/img/sr-logo.png",
+      "PackagePath": "staticwebassets/img/sr-logo.png"
+    },
+    {
       "Id": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },
