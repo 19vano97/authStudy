@@ -57,11 +57,6 @@ builder.Services.AddIdentityServer()
         Scopes = res.Scopes
     }).ToList())
     .AddDeveloperSigningCredential();
-    // .AddOperationalStore(options =>
-    // {
-    //     options.EnableTokenCleanup = identityServerSettings.EnableTokenCleanup;
-    //     options.TokenCleanupInterval = identityServerSettings.TokenCleanupInterval;
-    // });
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;

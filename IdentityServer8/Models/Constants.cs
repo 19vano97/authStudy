@@ -18,7 +18,7 @@ public static class Constants
 
         public static class DetailsFromToken
         {
-            public const string SID_KEY = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+            public const string ACCOUNT_ID = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
         }
     }
 }

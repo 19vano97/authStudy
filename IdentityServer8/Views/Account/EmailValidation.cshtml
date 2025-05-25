@@ -8,9 +8,9 @@
 
 <div class="email__container">
     <form asp-action="EmailValidation" method="post">
+        <input type="hidden" asp-for="ReturnUrl" />
         <h2 class="email__title">Enter your email</h2>
         <p class="email__text">type in your registered email address to reset password </address></p>
-        <input type="hidden" asp-for="ReturnUrl" />
         <div class="email__emailAd">
             <label asp-for="Username">Email</label>
             <input asp-for="Username" placeholder="Email Address *" />

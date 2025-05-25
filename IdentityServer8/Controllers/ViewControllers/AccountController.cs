@@ -42,7 +42,7 @@ public class AccountController(IAccountService accountService,
         if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin
             || user.AccountStatusEnum is Enums.AccountStatusEnum.NotExisted)
         {
-            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            ModelState.AddModelError("EmailOrPasswordAreEmpty", "Invalid login attempt.");
             return View(model);
         }
 
@@ -104,23 +104,6 @@ public class AccountController(IAccountService accountService,
     [HttpPost]
     public async Task<IActionResult> CreatePassword(ResetPasswordViewModel model)
     {
-        // var user = await _userManager.FindByNameAsync(model.Username);
-        // var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-        // if (!ModelState.IsValid) return View(model);
-
-        // var result = await _userManager.ResetPasswordAsync(user, token, model.Password);
-        
-        // if (result.Succeeded)
-        // {
-        //     await _signInManager.SignInAsync(user, isPersistent: false);
-        //     return Redirect(model.ReturnUrl);
-        // }
-
-        // ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
-        // return View(model);
-
         var user = await accountService.ResetPassword(model);
 
         if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin
