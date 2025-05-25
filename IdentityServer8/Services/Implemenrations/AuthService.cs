@@ -12,7 +12,7 @@ public class AuthService(UserManager<Account> userManager) : IAuthService
 {
     public async Task<AccountStatusDto> GetAccountDetailsById(ClaimsPrincipal user, Guid userToFind)
     {
-        var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.SID_KEY)?.Value;
+        var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
 
         if (string.IsNullOrEmpty(userId))
             return GeneralMethods.SetAccountStatusFromAccount(accountStatus: Enums.AccountStatusEnum.IssueWithLogin);
@@ -27,7 +27,7 @@ public class AuthService(UserManager<Account> userManager) : IAuthService
 
     public async Task<AccountStatusDto> GetCurrentAccountDetails(ClaimsPrincipal user)
     {
-        var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.SID_KEY)?.Value;
+        var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
 
         if (string.IsNullOrEmpty(userId))
             return GeneralMethods.SetAccountStatusFromAccount(accountStatus: Enums.AccountStatusEnum.IssueWithLogin);
