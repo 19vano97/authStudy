@@ -12,14 +12,31 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using static IdentityServer8.Models.Constants;
 
 namespace IdentityServer8.Controllers.ViewControllers;
 
-public class AccountController(IAccountService accountService, 
-                               SignInManager<Account> _signInManager, 
-                               UserManager<Account> _userManager,
-                               IThirdPartyLogin thirdPartyLogin) : Controller
+public class AccountController : Controller
 {
+    private readonly IAccountService _accountService;
+    private readonly SignInManager<Account> _signInManager;
+    private readonly UserManager<Account> _userManager;
+    private readonly IThirdPartyLogin _thirdPartyLogin;
+    private readonly IAccountHelper _accountHelper;
+
+    public AccountController(IAccountService accountService,
+                             SignInManager<Account> signInManager,
+                             UserManager<Account> userManager,
+                             IThirdPartyLogin thirdPartyLogin,
+                             IAccountHelper accountHelper)
+    {
+        _accountService = accountService;
+        _signInManager = signInManager;
+        _userManager = userManager;
+        _thirdPartyLogin = thirdPartyLogin;
+        _accountHelper = accountHelper;
+    }
+
     public IActionResult Index()
     {
         return View();
@@ -34,13 +51,12 @@ public class AccountController(IAccountService accountService,
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
             return View(model);
 
-        var user = await accountService.Login(model);
+        var user = await _accountService.LoginAsync(model);
 
-        if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin
-            || user.AccountStatusEnum is Enums.AccountStatusEnum.NotExisted)
+        if (!user.Succeeded)
         {
             ModelState.AddModelError("EmailOrPasswordAreEmpty", "Invalid login attempt.");
             return View(model);
@@ -58,15 +74,18 @@ public class AccountController(IAccountService accountService,
     [HttpPost]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        var user = await accountService.Register(model);
+        if (!ModelState.IsValid)
+            return View(model);
 
-        if (user.AccountStatusEnum is Enums.AccountStatusEnum.Existed)
+        var user = await _accountService.RegisterAsync(model);
+
+        if (user.Errors.FirstOrDefault(c => c.Code == Statuses.Register.AccountExists.CODE) != null)
         {
             ModelState.AddModelError(string.Empty, "Account is already existed");
             return View(model.ReturnUrl);
         }
 
-        if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin)
+        if (!user.Succeeded)
             return RedirectToAction("Error");
 
         return Redirect(model.ReturnUrl);
@@ -75,44 +94,63 @@ public class AccountController(IAccountService accountService,
     [HttpGet]
     public IActionResult EmailValidation(string returnUrl)
     {
-        return View(new EmailValidationViewModel {ReturnUrl = returnUrl});
+        var model = new EmailValidationViewModel
+        {
+            ReturnUrl = string.IsNullOrEmpty(returnUrl)
+                ? "/"
+                : returnUrl
+        };
+        return View(model);
     }
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> EmailValidation(EmailValidationViewModel model)
     {
-        if (!ModelState.IsValid) 
+        if (!ModelState.IsValid)
             return View(model);
 
-        var user = await accountService.EmailValidation(model);
-
-        if (user.AccountStatusEnum is Enums.AccountStatusEnum.NotExisted)
+        var user = await _accountHelper.FindByEmailOrIdAsync(email: model.Username);
+        if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "The account doesn't exist");
+            ModelState.AddModelError(nameof(model.Username), "The account doesn't exist");
             return View(model);
         }
 
-        return RedirectToAction("CreatePassword", model);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+        return RedirectToAction(nameof(CreatePassword), new
+        {
+            username  = model.Username,
+            token,
+            returnUrl = model.ReturnUrl
+        });
     }
 
     [HttpGet]
-    public IActionResult CreatePassword(EmailValidationViewModel emailValidation)
+    public IActionResult CreatePassword(string username, string token, string returnUrl = "/")
     {
-        return View(new ResetPasswordViewModel{ Username = emailValidation.Username, ReturnUrl = emailValidation.ReturnUrl});
+        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(token))
+        {
+            return BadRequest("Invalid password reset link.");
+        }
+
+        var model = new ResetPasswordViewModel
+        {
+            Username = username,
+            Token = token,
+            ReturnUrl = string.IsNullOrEmpty(returnUrl) ? "/" : returnUrl
+        };
+
+        return View(model);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> CreatePassword(ResetPasswordViewModel model)
     {
-        var user = await accountService.ResetPassword(model);
-
-        if (user.AccountStatusEnum is Enums.AccountStatusEnum.IssueWithLogin
-            || user.AccountStatusEnum is Enums.AccountStatusEnum.NotExisted
-            || user.Account is null)
-        {
-            ModelState.AddModelError(string.Empty, "Invalid reset password attempt.");
+        if (!ModelState.IsValid)
             return View(model);
-        }
 
         return Redirect(model.ReturnUrl);
     }
@@ -120,7 +158,21 @@ public class AccountController(IAccountService accountService,
     [HttpGet]
     public async Task<IActionResult> Logout(string logoutId)
     {
-        return Redirect(await accountService.Logout(logoutId));
+        var vm = await _accountService.BuildLogoutViewModelAsync(logoutId);
+        if (!vm.ShowLogoutPrompt)
+        {
+            // если не нужно подтверждение — сразу делаем
+            return await Logout(new LogoutInputModel { LogoutId = logoutId });
+        }
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout(LogoutInputModel model)
+    {
+        var redirectUri = await _accountService.LogoutAsync(model);
+        return Redirect(redirectUri);
     }
 
     public IActionResult Error()
@@ -135,7 +187,7 @@ public class AccountController(IAccountService accountService,
             var redirectUrl = Url.Action(nameof(MicrosoftExternalLoginCallback), "Account", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
-            return Challenge(properties, "MicrosoftOIDC"); 
+            return Challenge(properties, "MicrosoftOIDC");
         }
 
         return RedirectToAction("Error", "Home");
@@ -144,9 +196,9 @@ public class AccountController(IAccountService accountService,
 
     public async Task<IActionResult> MicrosoftExternalLoginCallback(string returnUrl)
     {
-        var tlp = await thirdPartyLogin.MicrosoftTPLCallback();
+        var tlp = await _thirdPartyLogin.MicrosoftTPLCallback();
 
-        if (tlp.AccountStatusEnum == Enums.AccountStatusEnum.NotExisted)
+        if (!tlp.Succeeded)
             return RedirectToAction("Login", returnUrl);
 
         return LocalRedirect(returnUrl);

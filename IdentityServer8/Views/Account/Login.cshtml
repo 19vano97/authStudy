@@ -1,34 +1,62 @@
 ﻿@using IdentityServer8.Extensions
-
 @model IdentityServer8.Models.ModelViewModels.LoginViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
     var returnUrl = ViewContext.HttpContext.Request.GetReturnUrl();
 }
 
-
 <div class="right__form">
     <form asp-action="Login" method="post">
+        @* Показываем все ошибки валидации *@
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @* Скрытое поле для сохранения returnUrl *@
+        @Html.HiddenFor(m => m.ReturnUrl)
+
         <h2 class="right__titile">Sign in</h2>
-        <input type="hidden" asp-for="ReturnUrl" />
-        <div class="right__form__email">
-            <label asp-for="Username">Email</label >
-            <input asp-for="Username" placeholder="Email Address *" />
+
+        <div class="right__form__email form-group">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" placeholder="Email Address *" />
+            <span asp-validation-for="Username" class="text-danger"></span>
         </div>
-        <div class="right__form__pas">
-            <label asp-for="Password">Password</label>
-            <input asp-for="Password" type="password"  placeholder="Password*">
+
+        <div class="right__form__pas form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Password *" />
+            <span asp-validation-for="Password" class="text-danger"></span>
         </div>
+
         <div class="right__form__but">
-            <button type="submit">Login</button>
-            <button><a class="main-link" asp-action="EmailValidation" asp-route-ReturnUrl="@returnUrl">Forgot password</a></button>
-            <a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Microsoft" asp-route-ReturnUrl="@returnUrl">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <button class="btn btn-link">
+                <a class="main-link"
+                   asp-action="EmailValidation"
+                   asp-route-returnUrl="@returnUrl">
+                    Forgot password
+                </a>
+            </button>
+            <a class="main-link"
+               asp-controller="Account"
+               asp-action="ExternalLogin"
+               asp-route-provider="Microsoft"
+               asp-route-returnUrl="@returnUrl">
                 Sign in with Microsoft
             </a>
         </div>
-        <button><a class="main-link" asp-action="Register" asp-route-ReturnUrl="@returnUrl">CREATE NEW ACCOUNT</a></button>
+
+        <div class="mt-3">
+            <button class="btn btn-link">
+                <a class="main-link"
+                   asp-action="Register"
+                   asp-route-returnUrl="@returnUrl">
+                    CREATE NEW ACCOUNT
+                </a>
+            </button>
+        </div>
     </form>
 </div>
 
-
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

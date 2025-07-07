@@ -1,8 +1,9 @@
 using System;
+using System.Reflection.Metadata;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer8.Entities.Account;
-using IdentityServer8.Enums;
+using IdentityServer8.Models;
 using IdentityServer8.Models.Account;
 using IdentityServer8.Models.ModelViewModels;
 using IdentityServer8.Models.Settings;
@@ -10,69 +11,104 @@ using IdentityServer8.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace IdentityServer8.Services.Implemenrations;
 
-public class AccountService(
-        SignInManager<Account> signInManager, 
-        UserManager<Account> userManager,
-        IClientStore clientStore,
-        IOptions<IdentityServerSettings> settings,
-        IIdentityServerInteractionService interaction) : IAccountService
+public class AccountService : IAccountService
 {
-    public async Task<AccountStatusDto> EmailValidation(EmailValidationViewModel model)
+    private readonly SignInManager<Account> _signInManager;
+    private readonly UserManager<Account> _userManager;
+    private readonly IClientStore _clientStore;
+    private readonly IdentityServerSettings _settings;
+    private readonly IIdentityServerInteractionService _interaction;
+    private readonly IAccountHelper _accountValidator;
+
+    public AccountService(SignInManager<Account> signInManager,
+                          UserManager<Account> userManager,
+                          IClientStore clientStore,
+                          IOptions<IdentityServerSettings> settings,
+                          IIdentityServerInteractionService interaction,
+                          IAccountHelper accountValidator)
     {
-        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
-
-        if (user is null)
-            return GeneralMethods.SetAccountStatusFromAccount();
-
-        return GeneralMethods.SetAccountStatusFromAccount(
-                await GeneralMethods.IsAccountExisted(userManager, email: model.Username),
-                    AccountStatusEnum.Existed);
+        _signInManager = signInManager;
+        _userManager = userManager;
+        _clientStore = clientStore;
+        _settings = settings.Value;
+        _interaction = interaction;
+        _accountValidator = accountValidator;
     }
 
-    public async Task<AccountStatusDto> Login(LoginViewModel model)
+    public async Task<SignInResult> LoginAsync(LoginViewModel model)
     {
-        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
+        var user = await _userManager.FindByEmailAsync(model.Username);
+        if (user == null)
+            return SignInResult.Failed;
 
-        if (user is null)
-            return GeneralMethods.SetAccountStatusFromAccount();
-
-        var loginProcess = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
-
-        if (!loginProcess.Succeeded)
-            return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.IssueWithLogin);
-
-        return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
+        return await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
     }
 
-    public async Task<string> Logout(string logoutId)
+    public async Task<string> LogoutAsync(string logoutId)
     {
-        var logoutRequest = await interaction.GetLogoutContextAsync(logoutId);
-        var postLogoutRedirectUri = settings.Value.DefaultReturnUri;
+        var logoutRequest = await _interaction.GetLogoutContextAsync(logoutId);
+        var postLogoutRedirectUri = !string.IsNullOrEmpty(_settings.DefaultReturnUri)
+            ? _settings.DefaultReturnUri
+            : "/";
 
         if (!string.IsNullOrEmpty(logoutRequest?.ClientId))
         {
-            var client = clientStore.FindClientByIdAsync(logoutRequest.ClientId).Result;
-            
+            var client = await _clientStore.FindClientByIdAsync(logoutRequest.ClientId);
+
             if (client != null && client.PostLogoutRedirectUris.Any())
                 postLogoutRedirectUri = client.PostLogoutRedirectUris.First();
         }
 
-        await signInManager.SignOutAsync();
+        await _signInManager.SignOutAsync();
+
+        return !string.IsNullOrEmpty(postLogoutRedirectUri) ? postLogoutRedirectUri : "/";
+    }
+
+    public async Task<LogoutViewModel> BuildLogoutViewModelAsync(string logoutId)
+    {
+        var ctx = await _interaction.GetLogoutContextAsync(logoutId);
+        return new LogoutViewModel
+        {
+            LogoutId = logoutId,
+            ShowLogoutPrompt = ctx?.ShowSignoutPrompt ?? true
+        };
+    }
+
+    public async Task<string> LogoutAsync(LogoutInputModel model)
+    {
+        await _signInManager.SignOutAsync();
+
+        var ctx = await _interaction.GetLogoutContextAsync(model.LogoutId);
+        string postLogoutRedirectUri = _settings.DefaultReturnUri ?? "/";
+
+        if (!string.IsNullOrEmpty(ctx?.ClientId))
+        {
+            var client = await _clientStore.FindClientByIdAsync(ctx.ClientId);
+            if (client?.PostLogoutRedirectUris.Any() == true)
+            {
+                postLogoutRedirectUri = client.PostLogoutRedirectUris.First();
+            }
+        }
 
         return postLogoutRedirectUri;
     }
 
-    public async Task<AccountStatusDto> Register(RegisterViewModel model)
+    public async Task<IdentityResult> RegisterAsync(RegisterViewModel model)
     {
-        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
+        if (await _userManager.FindByEmailAsync(model.Username) != null)
+        {
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = Constants.Statuses.Register.AccountExists.CODE,
+                Description = Constants.Statuses.Register.AccountExists.DESCRIPTION
+            });
+        }
 
-        if (user != null)
-            return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
-
-        var accountToAdd = new Account
+        var account = new Account
         {
             UserName = model.Username,
             Email = model.Username,
@@ -80,27 +116,33 @@ public class AccountService(
             LastName = model.LastName
         };
 
-        var result = await userManager.CreateAsync(accountToAdd, model.Password);
+        var result = await _userManager.CreateAsync(account, model.Password!);
 
         if (!result.Succeeded)
-            return GeneralMethods.SetAccountStatusFromAccount(accountToAdd, AccountStatusEnum.IssueWithLogin);
+            return result;
 
-        await signInManager.SignInAsync(accountToAdd, isPersistent: false);
-
-        return GeneralMethods.SetAccountStatusFromAccount(accountToAdd, AccountStatusEnum.Existed);;
+        await _signInManager.SignInAsync(account, isPersistent: false);
+        return IdentityResult.Success; ;
     }
 
-    public async Task<AccountStatusDto> ResetPassword(ResetPasswordViewModel model)
+    public async Task<IdentityResult> ResetPasswordAsync(ResetPasswordViewModel model)
     {
-        var user = await GeneralMethods.IsAccountExisted(userManager, email: model.Username);
-        var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var result = await userManager.ResetPasswordAsync(user, token, model.Password);
-        
-        if (!result.Succeeded || user is null)
-            return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.IssueWithLogin);
+        var user = await _userManager.FindByEmailAsync(model.Username);
+        if (user != null)
+        {
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = Constants.Statuses.Find.ByEmail.NotFound.CODE,
+                Description = Constants.Statuses.Find.ByEmail.NotFound.DESCRIPTION
+            });
+        }
 
-        await signInManager.SignInAsync(user, isPersistent: false);
-        
-        return GeneralMethods.SetAccountStatusFromAccount(user, AccountStatusEnum.Existed);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+        if (!result.Succeeded)
+            return result;
+
+        await _signInManager.SignInAsync(user, isPersistent: false);
+        return IdentityResult.Success;
     }
 }

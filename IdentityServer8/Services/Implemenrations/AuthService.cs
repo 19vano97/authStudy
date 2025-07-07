@@ -1,42 +1,128 @@
 using System;
+using System.Net;
 using System.Security.Claims;
+using IdentityServer8.Data;
 using IdentityServer8.Entities.Account;
+using IdentityServer8.Models;
 using IdentityServer8.Models.Account;
 using IdentityServer8.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using static IdentityServer8.Models.Constants;
 
 namespace IdentityServer8.Services.Implemenrations;
 
-public class AuthService(UserManager<Account> userManager) : IAuthService
+public class AuthService : IAuthService
 {
-    public async Task<AccountStatusDto> GetAccountDetailsById(ClaimsPrincipal user, Guid userToFind)
+    private readonly UserManager<Account> _userManager;
+    private readonly IdentityServer8DbContext _context;
+    private readonly IAccountHelper _accountHelper;
+    private readonly ILogger<AuthService> _logger;
+
+    public AuthService(UserManager<Account> userManager,
+                       IdentityServer8DbContext context,
+                       IAccountHelper accountHelper,
+                       ILogger<AuthService> logger)
     {
-        var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
-
-        if (string.IsNullOrEmpty(userId))
-            return GeneralMethods.SetAccountStatusFromAccount(accountStatus: Enums.AccountStatusEnum.IssueWithLogin);
-
-        var res = await GeneralMethods.IsAccountExisted(userManager, accountId: userToFind.ToString());
-
-        if (res is null)
-            return GeneralMethods.SetAccountStatusFromAccount(accountStatus: Enums.AccountStatusEnum.NotExisted);
-
-        return GeneralMethods.SetAccountStatusFromAccount(res);
+        _userManager = userManager;
+        _context = context;
+        _accountHelper = accountHelper;
+        _logger = logger;
     }
 
-    public async Task<AccountStatusDto> GetCurrentAccountDetails(ClaimsPrincipal user)
+    public async Task<AccountDto> GetAccountDetailsByIdAsync(ClaimsPrincipal user, Guid userToFind)
     {
         var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
 
         if (string.IsNullOrEmpty(userId))
-            return GeneralMethods.SetAccountStatusFromAccount(accountStatus: Enums.AccountStatusEnum.IssueWithLogin);
+            return new AccountDto
+            {
+                Id = Guid.TryParse(userId, out Guid id) == false ? Guid.Empty : id,
+                IsValid = false
+            };
 
-        var res = await GeneralMethods.IsAccountExisted(userManager, accountId: userId);
+        var res = await _accountHelper.FindByEmailOrIdAsync(accountId: userToFind);
 
         if (res is null)
-            return GeneralMethods.SetAccountStatusFromAccount(accountStatus: Enums.AccountStatusEnum.NotExisted);
+            return new AccountDto { IsValid = false };
 
-        return GeneralMethods.SetAccountStatusFromAccount(res);
+        return _accountHelper.ConvertToDto(res);
+    }
+
+    public async Task<AccountDto> GetCurrentAccountDetailsAsync(ClaimsPrincipal user)
+    {
+        return await GetAccountDetailsByIdAsync(user,
+            Guid.Parse(user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value!));
+    }
+
+    public async Task<IdentityResult> InviteNewAccountAsync(AccountDto account)
+    {
+        if (account.Email == null)
+        {
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = Constants.Statuses.Find.ByEmail.NotFound.CODE,
+                Description = Constants.Statuses.Find.ByEmail.NotFound.DESCRIPTION
+            });
+        }
+        string callbackUrl = "https://localhost:7270/";
+        var accountCheck = await _accountHelper.FindByEmailOrIdAsync(email: account.Email);
+
+        if (accountCheck is not null)
+            return IdentityResult.Success;
+
+        var newAccount = new Account
+        {
+            UserName = account.Email,
+            Email = account.Email,
+            FirstName = account.FirstName == null ? null : account.FirstName,
+            LastName = account.LastName == null ? null : account.LastName
+        };
+
+        var createResult = await _userManager.CreateAsync(newAccount);
+        if (!createResult.Succeeded)
+            return createResult;
+
+        var newUser = await _accountHelper.FindByEmailOrIdAsync(email: newAccount.Email);
+        var token = await _userManager.GeneratePasswordResetTokenAsync(newAccount);
+        var encodedToken = WebUtility.UrlEncode(token);
+        string resString = string.Format(callbackUrl + $"Account/CreatePassword?token={encodedToken}&username={newUser.UserName}");
+        
+        return IdentityResult.Success;
+    }
+
+    public async Task<AccountDto> UpdateAccountDetailsAsync(ClaimsPrincipal user, AccountDto account)
+    {
+        var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
+        if (string.IsNullOrEmpty(userId) || Guid.Parse(userId) != account.Id)
+        {
+            return new AccountDto
+            {
+                Id = Guid.TryParse(userId, out Guid id) == false ? Guid.Empty : id,
+                IsValid = false
+            };
+        }
+
+        try
+        {
+            var accountFromDb = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == account.Id.ToString());
+            if (accountFromDb.FirstName != account.FirstName || account.FirstName != null)
+                accountFromDb.FirstName = account.FirstName;
+            if (accountFromDb.LastName != account.LastName || account.LastName != null)
+                accountFromDb.LastName = account.LastName;
+
+            _context.Update(accountFromDb);
+            await _context.SaveChangesAsync();
+
+            return _accountHelper.ConvertToDto(await _accountHelper.FindByEmailOrIdAsync(accountId: (Guid)account.Id));
+        }
+        catch (System.Exception err)
+        {
+            return new AccountDto
+            {
+                Id = Guid.TryParse(userId, out Guid id) == false ? Guid.Empty : id,
+                IsValid = false
+            };
+        }
     }
 }
