@@ -1,12 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "L77IwLdw1VI=",
+  "dgSpecHash": "n4IvppN8mP8=",
   "success": true,
   "projectFilePath": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/IdentityServer8.csproj",
   "expectedPackageFiles": [
     "/Users/ivanhontar/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/ivanhontar/.nuget/packages/azure.core/1.38.0/azure.core.1.38.0.nupkg.sha512",
     "/Users/ivanhontar/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
+    "/Users/ivanhontar/.nuget/packages/fluentvalidation/11.11.0/fluentvalidation.11.11.0.nupkg.sha512",
+    "/Users/ivanhontar/.nuget/packages/fluentvalidation.aspnetcore/11.3.1/fluentvalidation.aspnetcore.11.3.1.nupkg.sha512",
+    "/Users/ivanhontar/.nuget/packages/fluentvalidation.dependencyinjectionextensions/11.11.0/fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "/Users/ivanhontar/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/Users/ivanhontar/.nuget/packages/identitymodel/7.0.0/identitymodel.7.0.0.nupkg.sha512",
     "/Users/ivanhontar/.nuget/packages/identityserver4/1.0.0/identityserver4.1.0.0.nupkg.sha512",

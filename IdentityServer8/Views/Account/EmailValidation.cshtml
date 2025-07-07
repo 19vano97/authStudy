@@ -1,34 +1,38 @@
-﻿@using IdentityServer8.Extensions
+﻿@model IdentityServer8.Models.ModelViewModels.EmailValidationViewModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    var returnUrl = ViewContext.HttpContext.Request.GetReturnUrl();
+    ViewData["Title"] = "Email Validation";
 }
-
-@model IdentityServer8.Models.ModelViewModels.EmailValidationViewModel
 
 <div class="email__container">
     <form asp-action="EmailValidation" method="post">
-        <input type="hidden" asp-for="ReturnUrl" />
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.ReturnUrl)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <h2 class="email__title">Enter your email</h2>
-        <p class="email__text">type in your registered email address to reset password </address></p>
-        <div class="email__emailAd">
-            <label asp-for="Username">Email</label>
-            <input asp-for="Username" placeholder="Email Address *" />
+        <p class="email__text">
+            Type in your registered email address to reset your password.
+        </p>
+
+        <div class="form-group">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" placeholder="Email Address *" />
+            <span asp-validation-for="Username" class="text-danger"></span>
         </div>
 
-        @if (!ViewData.ModelState.IsValid)
-        {
-            <div class="alert alert-danger">
-                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    <p>@error.ErrorMessage</p>
-                }
-            </div>
-        }
-
         <div class="email__but">
-            <button class="email__but__next" type="submit">Next</button>
-            <button><a class="register__backLogin" asp-action="Login" asp-route-ReturnUrl="@returnUrl">Back to login</a></button>
+            <button type="submit" class="btn btn-primary email__but__next">Next</button>
+            <a class="btn btn-link register__backLogin"
+               asp-action="Login"
+               asp-route-returnUrl="@Model.ReturnUrl">
+                Back to login
+            </a>
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -4,7 +4,10 @@ namespace IdentityServer8.Models.ModelViewModels;
 
 public class ResetPasswordViewModel
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public string ReturnUrl { get; set; }
+    public string? Username { get; set; }
+    public string? Token { get; set; }
+    public string? NewPassword { get; set; }
+    public string? ConfirmPassword { get; set; }
+    public required string ReturnUrl { get; set; }
 }
+

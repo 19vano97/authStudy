@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.Hosting;
 using IdentityServer4.Models;
@@ -6,6 +8,7 @@ using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer8.Data;
 using IdentityServer8.Entities.Account;
+using IdentityServer8.Models.ModelViewModels.Validator;
 using IdentityServer8.Models.Settings;
 using IdentityServer8.Models.Settings.ThirdPartyLogin;
 using IdentityServer8.Services;
@@ -23,6 +26,12 @@ var msLogin = new MicrosoftLogin();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginViewModelValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterViewModelValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ResetPasswordViewModelValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<EmailValidationViewModelValidator>();
 builder.Services.AddControllers();
 builder.Configuration.GetSection("IdentityServerSettings").Bind(identityServerSettings);
 builder.Configuration.GetSection("MicrosoftLogin").Bind(msLogin);
@@ -57,6 +66,7 @@ builder.Services.AddIdentityServer()
         Scopes = res.Scopes
     }).ToList())
     .AddDeveloperSigningCredential();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -122,6 +132,7 @@ builder.Services.AddTransient<IProfileService, CustomProfile>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IThirdPartyLogin, ThirdPartyLogin>();
+builder.Services.AddScoped<IAccountHelper, AccountHelper>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactClient",
@@ -150,6 +161,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseCors("AllowReactClient");
 app.UseCors("AllowMvcClient");
+app.UseExceptionHandler("/Home/Error");
+app.UseHsts();
 app.ConfigureCors();
 app.UseHttpsRedirection();
 app.UseStaticFiles();

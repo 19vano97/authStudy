@@ -194,3 +194,7 @@
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Newtonsoft.Json.Bson.dll
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/System.Net.WebSockets.WebSocketProtocol.dll
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/FluentValidation.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/obj/Debug/net8.0/IdentityServer8.MvcApplicationPartsAssemblyInfo.cs
