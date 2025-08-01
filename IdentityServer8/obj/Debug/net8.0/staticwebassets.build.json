@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "6WZIwliY6M+vHv7nIJtbyyFM9yYOoyUnc8Aq/zFkKbs=",
+  "Hash": "M4RlJcBlDmO4J7BCmYL0rGiWMLEsTE0FQ6Sja+k0E8w=",
   "Source": "IdentityServer8",
   "BasePath": "_content/IdentityServer8",
   "Mode": "Default",
@@ -141,6 +141,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/img/sr-logo.png"
+    },
+    {
+      "Identity": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/login-form.js",
+      "SourceId": "IdentityServer8",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/",
+      "BasePath": "_content/IdentityServer8",
+      "RelativePath": "js/login-form#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "cdegp70jiu",
+      "Integrity": "QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/js/login-form.js"
     },
     {
       "Identity": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/site.js",
@@ -1851,6 +1872,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE="
+        }
+      ]
+    },
+    {
+      "Route": "js/login-form.cdegp70jiu.js",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/login-form.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "604"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 15:36:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "cdegp70jiu"
+        },
+        {
+          "Name": "label",
+          "Value": "js/login-form.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY="
+        }
+      ]
+    },
+    {
+      "Route": "js/login-form.js",
+      "AssetFile": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/login-form.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "604"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 17 Jul 2025 15:36:55 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY="
         }
       ]
     },

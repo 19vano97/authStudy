@@ -21,6 +21,10 @@
       "PackagePath": "staticwebassets/img/sr-logo.png"
     },
     {
+      "Id": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/login-form.js",
+      "PackagePath": "staticwebassets/js/login-form.js"
+    },
+    {
       "Id": "/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },

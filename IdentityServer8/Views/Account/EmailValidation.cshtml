@@ -3,34 +3,39 @@
 
 @{
     ViewData["Title"] = "Email Validation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="email__container">
-    <form asp-action="EmailValidation" method="post">
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(m => m.ReturnUrl)
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <h2 class="email__title">Enter your email</h2>
-        <p class="email__text">
-            Type in your registered email address to reset your password.
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-3">Forgot Password</h3>
+        <p class="text-center text-muted small">
+            Enter your registered email address. We'll send you a link to reset your password.
         </p>
+        <form asp-action="EmailValidation" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.ReturnUrl)
+            @Html.ValidationSummary(true, "", new { @class = "text-danger small" })
 
-        <div class="form-group">
-            <label asp-for="Username"></label>
-            <input asp-for="Username" class="form-control" placeholder="Email Address *" />
-            <span asp-validation-for="Username" class="text-danger"></span>
-        </div>
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" placeholder="Email Address *" />
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
 
-        <div class="email__but">
-            <button type="submit" class="btn btn-primary email__but__next">Next</button>
-            <a class="btn btn-link register__backLogin"
-               asp-action="Login"
-               asp-route-returnUrl="@Model.ReturnUrl">
-                Back to login
-            </a>
-        </div>
-    </form>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+
+            <div class="text-center mt-3">
+                <a class="link-secondary text-decoration-none"
+                   asp-action="Login"
+                   asp-route-returnUrl="@Model.ReturnUrl">
+                    Back to login
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {

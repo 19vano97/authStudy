@@ -60,6 +60,18 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"xs3niasvgt"},{"Name":"integrity","Value":"sha256-/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE="},{"Name":"label","Value":"_content/IdentityServer8/img/sr-logo.png"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"2856"},{"Name":"Content-Type","Value":"image/png"},{"Name":"ETag","Value":"\u0022/1KkFnaiyVOHti8BjFSgd7NxgqmVyxCQpS/kaKqjWcE=\u0022"},{"Name":"Last-Modified","Value":"Fri, 21 Mar 2025 18:50:43 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IdentityServer8/js/login-form.cdegp70jiu.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\login-form.js'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"cdegp70jiu"},{"Name":"integrity","Value":"sha256-QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY="},{"Name":"label","Value":"_content/IdentityServer8/js/login-form.js"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"604"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 17 Jul 2025 15:36:55 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IdentityServer8/js/login-form.js">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\login-form.js'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"604"},{"Name":"Content-Type","Value":"text/javascript"},{"Name":"ETag","Value":"\u0022QF5Ar01WOs7jRahPAcAXwOcCbxLbxgNn0sHPkhWjinY=\u0022"},{"Name":"Last-Modified","Value":"Thu, 17 Jul 2025 15:36:55 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IdentityServer8/js/site.js">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\site.js'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

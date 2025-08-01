@@ -8,8 +8,8 @@ namespace IdentityServer8.Services.Interfaces;
 
 public interface IAuthService
 {
-    Task<AccountDto> GetCurrentAccountDetailsAsync(ClaimsPrincipal user);
-    Task<AccountDto> UpdateAccountDetailsAsync(ClaimsPrincipal user, AccountDto account);
-    Task<AccountDto> GetAccountDetailsByIdAsync(ClaimsPrincipal user, Guid userToFind);
-    Task<IdentityResult> InviteNewAccountAsync(AccountDto account);
+    Task<AccountDto> GetCurrentAccountDetailsAsync(ClaimsPrincipal user, CancellationToken cancellationToken);
+    Task<AccountDto> UpdateAccountDetailsAsync(ClaimsPrincipal user, AccountDto account, CancellationToken cancellationToken);
+    Task<AccountDto> GetAccountDetailsByIdAsync(ClaimsPrincipal user, Guid userToFind, CancellationToken cancellationToken);
+    Task<AccountDto> InviteNewAccountAsync(AccountDto account, CancellationToken cancellationToken);
 }

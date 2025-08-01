@@ -25,14 +25,14 @@ namespace IdentityServer8.Controllers.Api
         }
 
         [HttpGet("details")]
-        public async Task<ActionResult<AccountDto>> GetAccountDetails()
+        public async Task<ActionResult<AccountDto>> GetAccountDetails(CancellationToken cancellationToken)
         {
             var userId = User.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
 
             if (string.IsNullOrEmpty(userId))
                 return BadRequest();
 
-            var user = await _authService.GetCurrentAccountDetailsAsync(User);
+            var user = await _authService.GetCurrentAccountDetailsAsync(User, cancellationToken);
 
             if (!user.IsValid)
                 return BadRequest();
@@ -41,7 +41,7 @@ namespace IdentityServer8.Controllers.Api
         }
 
         [HttpPost("details/accounts")]
-        public async Task<ActionResult<List<AccountDto>>> GetAllAccounts(List<Guid> accounts = null)
+        public async Task<ActionResult<List<AccountDto>>> GetAllAccounts(List<Guid> accounts, CancellationToken cancellationToken)
         {
             var userId = User.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
 
@@ -53,12 +53,12 @@ namespace IdentityServer8.Controllers.Api
 
             var accountsResult = new List<AccountDto>();
 
-            foreach (var accountId in accounts)
+            foreach (var accountId in accounts.Distinct())
             {
-                var user = await _authService.GetAccountDetailsByIdAsync(User, accountId);
+                var user = await _authService.GetAccountDetailsByIdAsync(User, accountId, cancellationToken);
 
                 if (!user.IsValid)
-                    return BadRequest();
+                    continue;
 
                 accountsResult.Add(user);
             }
@@ -70,7 +70,7 @@ namespace IdentityServer8.Controllers.Api
         }
 
         [HttpPost("details")]
-        public async Task<ActionResult<AccountDto>> PostAccountDetails(AccountDto account)
+        public async Task<ActionResult<AccountDto>> PostAccountDetails(AccountDto account, CancellationToken cancellationToken)
         {
             var userId = User.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
             if (string.IsNullOrEmpty(userId) || Guid.Parse(userId) != account.Id)
@@ -82,7 +82,7 @@ namespace IdentityServer8.Controllers.Api
                 };
             }
 
-            var updatedAccount = await _authService.UpdateAccountDetailsAsync(User, account);
+            var updatedAccount = await _authService.UpdateAccountDetailsAsync(User, account, cancellationToken);
 
             if (!updatedAccount.IsValid)
                 return BadRequest();
@@ -91,14 +91,11 @@ namespace IdentityServer8.Controllers.Api
         }
 
         [HttpPost("invite")]
-        public async Task<ActionResult<AccountDto>> PrecreateInvitedAccount(AccountDto account)
+        public async Task<ActionResult<AccountDto>> PrecreateInvitedAccount(AccountDto account, CancellationToken cancellationToken)
         {
-            var res = await _authService.InviteNewAccountAsync(account);
-            System.Console.WriteLine(res);
-            //string.Format(callbackUrl + $"Account/Login?returnUrl=https://localhost:5173/signin-oidc")
-            // var encodedToken = WebUtility.UrlEncode(token);
-            //string resString = string.Format(callbackUrl + $"Account/CreatePassword?token={encodedToken}&username={newUser.UserName}");
-
+            var res = await _authService.InviteNewAccountAsync(account, cancellationToken);
+            if (!res.IsValid) return BadRequest();
+            
             return Ok(res);
         }
     }

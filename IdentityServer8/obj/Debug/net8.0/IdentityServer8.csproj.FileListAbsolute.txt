@@ -198,3 +198,14 @@
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
 /Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/obj/Debug/net8.0/IdentityServer8.MvcApplicationPartsAssemblyInfo.cs
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.Configuration.Binder.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Microsoft.Extensions.FileProviders.Abstractions.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.AspNetCore.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Extensions.Hosting.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Extensions.Logging.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Formatting.Compact.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Settings.Configuration.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Sinks.Console.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Sinks.Debug.dll
+/Users/ivanhontar/Work/cSharpAndNet/authStudy/IdentityServer8/bin/Debug/net8.0/Serilog.Sinks.File.dll

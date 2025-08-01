@@ -7,8 +7,6 @@ public static class HttpContextRequest
 {
     public static string GetReturnUrl(this HttpRequest request)
     {
-        var returnUrl = request.Query.FirstOrDefault(p => p.Key.Equals(Constants.IdentityCustomOpenId.LoginPage.RETURN_URL, StringComparison.OrdinalIgnoreCase)).Value;
-        
-        return returnUrl;
+        return request.Query.FirstOrDefault(p => p.Key.Equals(Constants.IdentityCustomOpenId.LoginPage.RETURN_URL, StringComparison.OrdinalIgnoreCase)).Value;
     }
 }

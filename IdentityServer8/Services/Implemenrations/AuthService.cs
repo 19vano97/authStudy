@@ -30,7 +30,7 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
-    public async Task<AccountDto> GetAccountDetailsByIdAsync(ClaimsPrincipal user, Guid userToFind)
+    public async Task<AccountDto> GetAccountDetailsByIdAsync(ClaimsPrincipal user, Guid userToFind, CancellationToken cancellationToken)
     {
         var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
 
@@ -49,27 +49,23 @@ public class AuthService : IAuthService
         return _accountHelper.ConvertToDto(res);
     }
 
-    public async Task<AccountDto> GetCurrentAccountDetailsAsync(ClaimsPrincipal user)
+    public async Task<AccountDto> GetCurrentAccountDetailsAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
         return await GetAccountDetailsByIdAsync(user,
-            Guid.Parse(user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value!));
+            Guid.Parse(user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value!), cancellationToken);
     }
 
-    public async Task<IdentityResult> InviteNewAccountAsync(AccountDto account)
+    public async Task<AccountDto> InviteNewAccountAsync(AccountDto account, CancellationToken cancellationToken)
     {
         if (account.Email == null)
         {
-            return IdentityResult.Failed(new IdentityError
-            {
-                Code = Constants.Statuses.Find.ByEmail.NotFound.CODE,
-                Description = Constants.Statuses.Find.ByEmail.NotFound.DESCRIPTION
-            });
+            return null!;
         }
         string callbackUrl = "https://localhost:7270/";
         var accountCheck = await _accountHelper.FindByEmailOrIdAsync(email: account.Email);
 
         if (accountCheck is not null)
-            return IdentityResult.Success;
+            return _accountHelper.ConvertToDto(accountCheck);
 
         var newAccount = new Account
         {
@@ -81,17 +77,18 @@ public class AuthService : IAuthService
 
         var createResult = await _userManager.CreateAsync(newAccount);
         if (!createResult.Succeeded)
-            return createResult;
+            return null!;
 
         var newUser = await _accountHelper.FindByEmailOrIdAsync(email: newAccount.Email);
         var token = await _userManager.GeneratePasswordResetTokenAsync(newAccount);
         var encodedToken = WebUtility.UrlEncode(token);
         string resString = string.Format(callbackUrl + $"Account/CreatePassword?token={encodedToken}&username={newUser.UserName}");
+        _logger.LogInformation(resString);
         
-        return IdentityResult.Success;
+        return _accountHelper.ConvertToDto(await _accountHelper.FindByEmailOrIdAsync(email: account.Email));
     }
 
-    public async Task<AccountDto> UpdateAccountDetailsAsync(ClaimsPrincipal user, AccountDto account)
+    public async Task<AccountDto> UpdateAccountDetailsAsync(ClaimsPrincipal user, AccountDto account, CancellationToken cancellationToken)
     {
         var userId = user.FindFirst(IdentityCustomOpenId.DetailsFromToken.ACCOUNT_ID)?.Value;
         if (string.IsNullOrEmpty(userId) || Guid.Parse(userId) != account.Id)
@@ -105,7 +102,7 @@ public class AuthService : IAuthService
 
         try
         {
-            var accountFromDb = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == account.Id.ToString());
+            var accountFromDb = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == account.Id.ToString(), cancellationToken);
             if (accountFromDb.FirstName != account.FirstName || account.FirstName != null)
                 accountFromDb.FirstName = account.FirstName;
             if (accountFromDb.LastName != account.LastName || account.LastName != null)
