@@ -38,7 +38,8 @@ public class AccountHelper : IAccountHelper
         }
     }
 
-    public async Task<Account?> FindByEmailOrIdAsync(string email = null!, Guid accountId = default)
+    public async Task<Account?> FindByEmailOrIdAsync(string email = null!,
+                                                     Guid accountId = default)
     {
         if (accountId != default)
             return await _userManager.FindByIdAsync(accountId.ToString()) ?? null!;

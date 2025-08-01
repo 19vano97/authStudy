@@ -2,46 +2,53 @@
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Sing Up";
     var returnUrl = Model.ReturnUrl;
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container__register">
-    <form asp-action="Register" method="post">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(m => m.ReturnUrl)
+<div class="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-4">Create Account</h3>
+        <form asp-action="Register" method="post">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger small" })
+            @Html.HiddenFor(m => m.ReturnUrl)
 
-        <h2 class="register__title">Sign up to socialRepeat</h2>
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="First name" />
+                <span asp-validation-for="FirstName" class="text-danger small"></span>
+            </div>
 
-        <div class="form-group register__name__fn">
-            <label asp-for="FirstName"></label>
-            <input asp-for="FirstName" class="form-control" placeholder="First name" />
-            <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" placeholder="Last name" />
+                <span asp-validation-for="LastName" class="text-danger small"></span>
+            </div>
 
-        <div class="form-group register__name__ln">
-            <label asp-for="LastName"></label>
-            <input asp-for="LastName" class="form-control" placeholder="Last name" />
-            <span asp-validation-for="LastName" class="text-danger"></span>
-        </div>
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control" placeholder="Email" />
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
 
-        <div class="form-group">
-            <label asp-for="Username"></label>
-            <input asp-for="Username" class="form-control" placeholder="Email" />
-            <span asp-validation-for="Username" class="text-danger"></span>
-        </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
 
-        <div class="form-group register__pas">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </div>
 
-        <button class="register__signup btn btn-primary" type="submit">Create new account</button>
-        <a class="btn btn-link register__backLogin" asp-action="Login" asp-route-returnUrl="@returnUrl">
-            Back to login
-        </a>
-    </form>
+            <div class="text-center mt-3">
+                <a class="link-secondary text-decoration-none" asp-action="Login" asp-route-returnUrl="@returnUrl">
+                    Back to login
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {

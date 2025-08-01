@@ -45,24 +45,42 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login(string returnUrl)
     {
+        TempData["ReturnUrl"] = returnUrl;
+        TempData.Keep("ReturnUrl");
         return View(new LoginViewModel { ReturnUrl = returnUrl });
     }
 
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
+        TempData.Keep("ReturnUrl");
+
         if (!ModelState.IsValid)
-            return View(model);
-
-        var user = await _accountService.LoginAsync(model);
-
-        if (!user.Succeeded)
         {
-            ModelState.AddModelError("EmailOrPasswordAreEmpty", "Invalid login attempt.");
+            model.ReturnUrl ??= TempData["ReturnUrl"]?.ToString();
+            TempData["ReturnUrl"] = model.ReturnUrl;
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return PartialView("_LoginPartial", model);
+
             return View(model);
         }
 
-        return Redirect(model.ReturnUrl);
+        var user = await _accountService.LoginAsync(model);
+
+        if (!user.Succeeded || user.IsNotAllowed)
+        {
+            ModelState.AddModelError("EmailOrPasswordAreEmpty", "Invalid login attempt.");
+            model.ReturnUrl ??= TempData["ReturnUrl"]?.ToString();
+            TempData["ReturnUrl"] = model.ReturnUrl;
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return PartialView("_LoginPartial", model);
+
+            return View(model);
+        }
+
+        return Redirect(model.ReturnUrl ?? "/");
     }
 
     [HttpGet]
@@ -100,6 +118,7 @@ public class AccountController : Controller
                 ? "/"
                 : returnUrl
         };
+        
         return View(model);
     }
 
@@ -121,7 +140,7 @@ public class AccountController : Controller
 
         return RedirectToAction(nameof(CreatePassword), new
         {
-            username  = model.Username,
+            username = model.Username,
             token,
             returnUrl = model.ReturnUrl
         });
@@ -147,10 +166,30 @@ public class AccountController : Controller
 
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreatePassword(ResetPasswordViewModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
+
+        var user = await _accountHelper.FindByEmailOrIdAsync(model.Username);
+        if (user == null)
+        {
+            ModelState.AddModelError(string.Empty, "Invalid user.");
+            return View(model);
+        }
+
+        var resetResult = await _userManager.ResetPasswordAsync(user, model.Token, model.ConfirmPassword);
+        if (!resetResult.Succeeded)
+        {
+            foreach (var error in resetResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return View(model);
+        }
+
+        await _signInManager.SignInAsync(user, isPersistent: false);
 
         return Redirect(model.ReturnUrl);
     }
@@ -161,7 +200,6 @@ public class AccountController : Controller
         var vm = await _accountService.BuildLogoutViewModelAsync(logoutId);
         if (!vm.ShowLogoutPrompt)
         {
-            // если не нужно подтверждение — сразу делаем
             return await Logout(new LogoutInputModel { LogoutId = logoutId });
         }
         return View(vm);

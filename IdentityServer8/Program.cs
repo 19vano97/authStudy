@@ -1,30 +1,41 @@
-﻿using System.Linq;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using IdentityServer4.EntityFramework.Entities;
-using IdentityServer4.Hosting;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
-using IdentityServer4.Stores;
+﻿using System;
+using System.Linq;
 using IdentityServer8.Data;
 using IdentityServer8.Entities.Account;
-using IdentityServer8.Models.ModelViewModels.Validator;
 using IdentityServer8.Models.Settings;
 using IdentityServer8.Models.Settings.ThirdPartyLogin;
-using IdentityServer8.Services;
-using IdentityServer8.Services.Implemenrations;
 using IdentityServer8.Services.Interfaces;
+using IdentityServer8.Services.Implemenrations;
+using IdentityServer4.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using IdentityServer8.Models.ModelViewModels.Validator;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-var identityServerSettings = new IdentityServerSettings();
-var msLogin = new MicrosoftLogin();
 
-// Add services to the container.
+// 1) Kestrel configuration
+builder.WebHost.ConfigureKestrel(opts =>
+{
+    opts.ListenAnyIP(5168);                 // HTTP
+    opts.ListenAnyIP(7270, lo => lo.UseHttps());  // HTTPS
+});
+
+// 2) Bind custom settings from configuration
+var idSvrSettings = new IdentityServerSettings();
+var msLogin = new MicrosoftLogin();
+builder.Configuration.GetSection("IdentityServerSettings").Bind(idSvrSettings);
+builder.Configuration.GetSection("MicrosoftLogin").Bind(msLogin);
+
+// 3) MVC + FluentValidation
 builder.Services.AddControllersWithViews();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
@@ -32,147 +43,133 @@ builder.Services.AddValidatorsFromAssemblyContaining<LoginViewModelValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterViewModelValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<ResetPasswordViewModelValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<EmailValidationViewModelValidator>();
-builder.Services.AddControllers();
-builder.Configuration.GetSection("IdentityServerSettings").Bind(identityServerSettings);
-builder.Configuration.GetSection("MicrosoftLogin").Bind(msLogin);
-builder.Services.AddDbContext<IdentityServer8DbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-);
+builder.Services.AddDbContext<IdentityServer8DbContext>(opts =>
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// 5) ASP.NET Identity setup
 builder.Services.AddIdentity<Account, IdentityRole>()
     .AddEntityFrameworkStores<IdentityServer8DbContext>()
     .AddDefaultTokenProviders();
-builder.Services.AddIdentityServer()
+
+// 6) IdentityServer4 configuration (in-memory grant store)
+builder.Services.AddIdentityServer(options =>
+    {
+        options.Events.RaiseErrorEvents = true;
+        options.Events.RaiseFailureEvents = true;
+        options.Events.RaiseSuccessEvents = true;
+    })
     .AddAspNetIdentity<Account>()
-    .AddInMemoryIdentityResources(identityServerSettings.IdentityResources.Select(resource => new IdentityServer4.Models.IdentityResource(resource, [resource])))
-    .AddInMemoryApiScopes(identityServerSettings.ApiScopes.Select(scope => new IdentityServer4.Models.ApiScope(scope.Name, scope.DisplayName)))
-    .AddInMemoryClients(identityServerSettings.Clients.Select(client => new IdentityServer4.Models.Client
+    .AddInMemoryIdentityResources(new List<IdentityResource>
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile(),
+            new IdentityResources.Email()
+        })
+    .AddInMemoryApiResources(idSvrSettings.ApiResources.Select(ar =>
+        new ApiResource(ar.Name, ar.DisplayName)
+        {
+            Scopes = ar.Scopes
+        }
+    ).ToList())
+    .AddInMemoryApiScopes(idSvrSettings.ApiScopes
+        .Select(s => new ApiScope(s.Name, s.DisplayName)).ToList())
+    .AddInMemoryClients(idSvrSettings.Clients.Select(c => new Client
     {
-        ClientId = client.ClientId,
-        AllowedGrantTypes = client.AllowedGrantTypes,
-        RequireClientSecret = client.RequireClientSecret,
-        RedirectUris = client.RedirectUris,
-        PostLogoutRedirectUris = client.PostLogoutRedirectUris,
-        AllowedScopes = client.AllowedScopes,
-        AllowOfflineAccess = client.AllowOfflineAccess,
-        RequirePkce = client.RequirePkce,
-        AccessTokenLifetime = client.AccessTokenLifetime,
-        AbsoluteRefreshTokenLifetime = client.AbsoluteRefreshTokenLifetime,
-        RefreshTokenUsage = client.RefreshTokenUsage
-    }))
-    .AddInMemoryApiResources(identityServerSettings.ApiResources.Select(res => new IdentityServer4.Models.ApiResource() 
-    {
-        Name = res.Name, 
-        DisplayName = res.DisplayName, 
-        Scopes = res.Scopes
+        ClientId = c.ClientId,
+        AllowedGrantTypes = GrantTypes.Code,        
+        RequireClientSecret = false,                 
+        RedirectUris = c.RedirectUris,
+        PostLogoutRedirectUris = c.PostLogoutRedirectUris,
+        AllowedScopes = c.AllowedScopes,
+        RequirePkce = c.RequirePkce,
+        AllowOfflineAccess = c.AllowOfflineAccess,  
+        AccessTokenLifetime = c.AccessTokenLifetime,
+        AbsoluteRefreshTokenLifetime = c.AbsoluteRefreshTokenLifetime,
+        RefreshTokenUsage = c.RefreshTokenUsage,
+        RefreshTokenExpiration = TokenExpiration.Sliding,
+        SlidingRefreshTokenLifetime = c.AbsoluteRefreshTokenLifetime,
+        AllowedCorsOrigins = new[] { "https://localhost:5173", "https://localhost:7124", "https://localhost:7188" },
     }).ToList())
     .AddDeveloperSigningCredential();
 
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = "MicrosoftOIDC"; // For OpenID Connect
-})
-    .AddJwtBearer("Bearer", options =>
-    {
-        options.Authority = identityServerSettings.OwnAccess.Authority;
-        options.Audience = identityServerSettings.OwnAccess.Audience;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidIssuer = identityServerSettings.OwnAccess.Authority,
-            ValidAudience = identityServerSettings.OwnAccess.Audience
-        };
-    })
-    .AddJwtBearer(msLogin.JwtMsLogin.Name, options =>
-    {
-        options.Authority = $"https://login.microsoftonline.com/{msLogin.TenantId}/v2.0"; 
-        options.Audience = msLogin.JwtMsLogin.Audience;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = $"https://login.microsoftonline.com/{msLogin.TenantId}/v2.0",
-            ValidateAudience = true,
-            ValidAudience = msLogin.JwtMsLogin.Audience,
-            ValidateLifetime = true
-        };
-    })
-    .AddOpenIdConnect(msLogin.OidcMsLogin.Name, options =>
-    {
-        options.SignInScheme = msLogin.OidcMsLogin.SignInScheme; 
-        options.Authority = msLogin.OidcMsLogin.Authority;
-        options.ClientId = msLogin.ClientId;
-        options.ClientSecret = msLogin.ClientSecret;
-        options.ResponseType = msLogin.OidcMsLogin.ResponseType;
-        options.SaveTokens = msLogin.OidcMsLogin.SaveTokens;
-        options.CallbackPath = msLogin.OidcMsLogin.CallbackPath;
-        options.Scope.Add("Calendars.Read");
-        options.Scope.Add("offline_access");
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = msLogin.OidcMsLogin.Authority,
-            ValidateAudience = true,
-            ValidAudience = msLogin.ClientId,
-            ValidateLifetime = true
-        };
-    });
-
-
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5168);
-    options.ListenAnyIP(7270, listenOptions =>
-    {
-        listenOptions.UseHttps();
-    });
-});
-builder.Services.AddTransient<IProfileService, CustomProfile>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IThirdPartyLogin, ThirdPartyLogin>();
 builder.Services.AddScoped<IAccountHelper, AccountHelper>();
-builder.Services.AddCors(options =>
+
+builder.Services.AddAuthentication(options =>
 {
-    options.AddPolicy("AllowReactClient",
-        builder => builder
-            .WithOrigins("https://localhost:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
-    options.AddPolicy("AllowMvcClient",
-        builder => builder
-            .WithOrigins("https://localhost:7124")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials());
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = msLogin.OidcMsLogin.Name;
+})
+.AddJwtBearer("Bearer", opts =>
+{
+    opts.Authority = idSvrSettings.OwnAccess.Authority;
+    opts.Audience = idSvrSettings.OwnAccess.Audience;
+    opts.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidIssuer = idSvrSettings.OwnAccess.Authority,
+        ValidAudience = idSvrSettings.OwnAccess.Audience
+    };
+})
+.AddOpenIdConnect(msLogin.OidcMsLogin.Name, opts =>
+{
+    opts.SignInScheme = msLogin.OidcMsLogin.SignInScheme;
+    opts.Authority = msLogin.OidcMsLogin.Authority;
+    opts.ClientId = msLogin.ClientId;
+    opts.ClientSecret = msLogin.ClientSecret;
+    opts.ResponseType = msLogin.OidcMsLogin.ResponseType;
+    opts.SaveTokens = msLogin.OidcMsLogin.SaveTokens;
+    opts.CallbackPath = msLogin.OidcMsLogin.CallbackPath;
+    opts.Scope.Add("Calendars.Read");
+    opts.Scope.Add("offline_access");
+    opts.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = msLogin.OidcMsLogin.Authority,
+        ValidateAudience = true,
+        ValidAudience = msLogin.ClientId,
+        ValidateLifetime = true
+    };
+});
+
+builder.Services.AddCors(o =>
+{
+    o.AddPolicy("AllowAllClients", p => p
+        .WithOrigins("https://localhost:5173", "https://localhost:7124", "https://localhost:7188")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+    );
+});
+builder.Host.UseSerilog((ctx, cfg) =>
+{
+    cfg.ReadFrom.Configuration(ctx.Configuration);
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-app.UseCors("AllowReactClient");
-app.UseCors("AllowMvcClient");
-app.UseExceptionHandler("/Home/Error");
-app.UseHsts();
-app.ConfigureCors();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseIdentityServer();
+
 app.UseRouting();
+app.UseCors("AllowAllClients");
+app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Account}/{action=Index}");
+app.MapDefaultControllerRoute();
 
 app.Run();

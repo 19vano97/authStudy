@@ -1,0 +1,16 @@
+﻿@model IdentityServer8.Models.ModelViewModels.LogoutViewModel
+
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<h2>Logout</h2>
+
+<form asp-action="Logout" method="post">
+    <div>
+        <p>Are you sure you want to log out?</p>
+    </div>
+    <input type="hidden" asp-for="LogoutId" />
+    <button type="submit" class="btn btn-primary">Log out</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
