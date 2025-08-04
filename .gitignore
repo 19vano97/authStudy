@@ -23,6 +23,7 @@ mono_crash.*
 [Rr]elease/
 [Rr]eleases/
 Debug/net9.0/
+Debug/net8.0/
 certWindows/
 cert/
 
