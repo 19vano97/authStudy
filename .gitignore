@@ -26,6 +26,8 @@ Debug/net9.0/
 Debug/net8.0/
 certWindows/
 cert/
+obj/
+bin/
 
 [Dd]ebug/x64/
 [Dd]ebugPublic/x64/
