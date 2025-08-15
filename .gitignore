@@ -437,3 +437,4 @@ FodyWeavers.xsd
 *.pem
 
 .fake
+nuget.config
